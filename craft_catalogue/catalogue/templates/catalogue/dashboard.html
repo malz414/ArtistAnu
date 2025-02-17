@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="text-center my-4">Item Dashboard</h1>
+
+    <div class="row">
+        <!-- Filters Sidebar (Desktop View) -->
+        <div class="col-md-2 d-none d-md-block">
+            <h5>Filters</h5>
+            <form method="GET" class="mb-4">
+                <div class="mb-3">
+                    <label for="category">Category</label>
+                    <select name="category" class="form-control">
+                        <option value="" {% if not request.GET.category %}selected{% endif %}>All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.name }}" {% if request.GET.category == category.name %}selected{% endif %}>{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="price_min">Min Price</label>
+                    <input type="number" name="price_min" class="form-control" placeholder="0" value="{{ request.GET.price_min }}" min="0">
+                </div>
+                <div class="mb-3">
+                    <label for="price_max">Max Price</label>
+                    <input type="number" name="price_max" class="form-control" placeholder="1000" value="{{ request.GET.price_max }}" min="0">
+                </div>
+                <div class="mb-3">
+                    <label for="sort_by">Sort By</label>
+                    <select name="sort_by" class="form-control">
+                        <option value="name" {% if request.GET.sort_by == 'name' %}selected{% endif %}>Name</option>
+                        <option value="price" {% if request.GET.sort_by == 'price' %}selected{% endif %}>Price (Low to High)</option>
+                        <option value="-price" {% if request.GET.sort_by == '-price' %}selected{% endif %}>Price (High to Low)</option>
+                        <option value="-id" {% if request.GET.sort_by == '-id' %}selected{% endif %}>Newest</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="items_per_page">Items/Page</label>
+                    <select name="items_per_page" class="form-control">
+                        <option value="8" {% if request.GET.items_per_page == '8' %}selected{% endif %}>8</option>
+                        <option value="16" {% if not request.GET.items_per_page or request.GET.items_per_page == '16' %}selected{% endif %}>16</option>
+                        <option value="32" {% if request.GET.items_per_page == '32' %}selected{% endif %}>32</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <input type="checkbox" name="is_unique" value="1" {% if request.GET.is_unique %}checked{% endif %}> Unique <br>
+                    <input type="checkbox" name="is_sustainable" value="1" {% if request.GET.is_sustainable %}checked{% endif %}> Sustainable <br>
+                    <input type="checkbox" name="is_handmade" value="1" {% if request.GET.is_handmade %}checked{% endif %}> Handmade <br>
+                </div>
+                <button type="submit" class="btn btn-dark w-100">Filter</button>
+            </form>
+        </div>
+
+        <!-- Items Display (Main Content) -->
+        <div class="col-md-10">
+            <!-- Filters for Mobile (Dropdown) -->
+            <div class="d-md-none mb-4">
+                <h5>Filters</h5>
+                <form method="GET">
+                    <div class="mb-3">
+                        <select name="category" class="form-control">
+                            <option value="" {% if not request.GET.category %}selected{% endif %}>Category</option>
+                            {% for category in categories %}
+                                <option value="{{ category.name }}" {% if request.GET.category == category.name %}selected{% endif %}>{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <input type="number" name="price_min" class="form-control" placeholder="Min Price" value="{{ request.GET.price_min }}" min="0">
+                    </div>
+                    <div class="mb-3">
+                        <input type="number" name="price_max" class="form-control" placeholder="Max Price" value="{{ request.GET.price_max }}" min="0">
+                    </div>
+                    <div class="mb-3">
+                        <select name="sort_by" class="form-control">
+                            <option value="name" {% if request.GET.sort_by == 'name' %}selected{% endif %}>Sort By</option>
+                            <option value="name" {% if request.GET.sort_by == 'name' %}selected{% endif %}>Name</option>
+                            <option value="price" {% if request.GET.sort_by == 'price' %}selected{% endif %}>Price (Low to High)</option>
+                            <option value="-price" {% if request.GET.sort_by == '-price' %}selected{% endif %}>Price (High to Low)</option>
+                            <option value="-id" {% if request.GET.sort_by == '-id' %}selected{% endif %}>Newest</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <select name="items_per_page" class="form-control">
+                            <option value="8" {% if request.GET.items_per_page == '8' %}selected{% endif %}>Items/Page</option>
+                            <option value="16" {% if not request.GET.items_per_page or request.GET.items_per_page == '16' %}selected{% endif %}>16</option>
+                            <option value="32" {% if request.GET.items_per_page == '32' %}selected{% endif %}>32</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <input type="checkbox" name="is_unique" value="1" {% if request.GET.is_unique %}checked{% endif %}> Unique <br>
+                        <input type="checkbox" name="is_sustainable" value="1" {% if request.GET.is_sustainable %}checked{% endif %}> Sustainable <br>
+                        <input type="checkbox" name="is_handmade" value="1" {% if request.GET.is_handmade %}checked{% endif %}> Handmade <br>
+                    </div>
+                    <button type="submit" class="btn btn-dark w-100">Filter</button>
+                </form>
+            </div>
+
+            <!-- Items -->
+            <div class="row">
+                {% for item in items %}
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100">
+                        <a href="{% url 'item_detail' item.name %}">
+                            {% with item.images.first as first_image %}
+                                {% if first_image %}
+                                    <img src="{{ first_image.image.url }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: cover;">
+                                {% else %}
+                                    <img src="/static/default-image.jpg" class="card-img-top" alt="No image available" style="height: 200px; object-fit: cover;">
+                                {% endif %}
+                            {% endwith %}
+                        </a>
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ item.name }}</h5>
+                            <p class="card-text"> ${{ item.price|floatformat:2 }}</p>
+                            <p class="card-text"> <strong>Creator:</strong> <a href="{% url 'artist_detail' item.artist.name %}">{{ item.artist.name }}</a></p>
+                            <a href="{% url 'item_detail' item.name %}" class="btn btn-primary w-45 m-1 btn-sm ">View Item Details</a>
+                            <a href="{% url 'add_to_cart' item.id %}" class="btn btn-success w-45 m-1 btn-sm">🛒 Add to Cart</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted text-center">No items found.</p>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-center mt-4">
+                <ul class="pagination">
+                    {% if items.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ items.previous_page_number }}">Previous</a></li>
+                    {% endif %}
+
+                    <li class="page-item disabled">
+                        <span class="page-link">Page {{ items.number }} of {{ items.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if items.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ items.next_page_number }}">Next</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ items.paginator.num_pages }}">Last</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

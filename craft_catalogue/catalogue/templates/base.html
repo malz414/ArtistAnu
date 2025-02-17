@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ArtistAnu</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz:wght@200..700&display=swap" rel="stylesheet">
+    </head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">ArtistAnu</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="/dashboard/">Item Catalogue</a></li>
+                <li class="nav-item"><a class="nav-link" href="/artist_list/">Artists</a></li>
+                
+                <!-- Categories Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Categories
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
+                        {% for category in categories %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'dashboard' %}?category={{ category.name }}">
+                                    {{ category.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                        <li><a class="dropdown-item fw-bold" href="{% url 'all_categories' %}">📁 All Categories</a></li>
+                    </ul>
+                </li>
+                
+                <li class="nav-item"><a class="nav-link" href="/about/">About Us</a></li>
+                <li class="nav-item"><a class="nav-link" href="/contact/">Contact</a></li>
+                
+                {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Sign Up</a></li>
+                {% endif %}
+                
+                <!-- Cart -->
+                <li class="nav-item">
+                    <a href="{% url 'cart_detail' %}">
+                        <button class="cart-button">
+                            Cart
+                            {% if user.is_authenticated %}
+                                {% with cart=request.user.cart_set.last %}
+                                    {% if cart %}
+                                        ({{ cart.cart_items.count }})
+                                    {% else %}
+                                        (0)
+                                    {% endif %}
+                                {% endwith %}
+                            {% else %}
+                                {% with cart=request.session.cart %}
+                                    {% if cart %}
+                                        ({{ cart|length }})
+                                    {% else %}
+                                        (0)
+                                    {% endif %}
+                                {% endwith %}
+                            {% endif %}
+                        </button>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="search-container" style="position: relative">
+                <form method="GET" action="{% url 'dashboard' %}" class="ms-auto">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Search for items" value="{{ search_query }}">
+                        <button type="submit" class="btn btn-dark">Search</button>
+                    </div>
+                </form>
+                <!-- Dropdown will be appended here by JavaScript -->
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid p-0 mt-4 ">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="bg-dark text-white py-3">
+        <div class="container">
+            <div class="row d-flex justify-content-between text-center text-md-start">
+                <div class="col-md-2"></div>
+                <!-- About & Terms -->
+                <div class="col-md-2 text-center">
+                    <p><a class="nav-link text-white" href="/about/">About Us</a></p>
+                    <p><a class="nav-link text-white" href="/terms/">Terms and Conditions</a></p>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="col-md-4 text-center">
+                    <p>Contact:</p>
+                    <p><a class="nav-link text-white" href="mailto:maliquelovence@hotmail.com">maliquelovence@hotmail.com</a></p>
+                    <p><a class="nav-link text-white" href="tel:+14707536488">+1-470-753-6488</a></p>
+                </div>
+
+                <!-- Copyright -->
+                <div class="col-md-2 text-center">
+                    <p>&copy; 2024 ArtistAnu</p>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+    </footer>
+    
+        <!-- Footer and other content -->
+     
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            const searchInput = document.querySelector('input[name="search"]');
+            const searchForm = document.querySelector('form[method="GET"]');
+            let currentDropdown = null; // Track active dropdown
+        
+            searchInput.addEventListener('input', function() {
+                const searchQuery = searchInput.value;
+                if (currentDropdown) {
+                    currentDropdown.remove(); // Remove previous dropdown
+                }
+                if (searchQuery.length > 2) {
+                    fetch(`/search-suggestions/?query=${searchQuery}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const dropdown = document.createElement('div');
+                            dropdown.classList.add('search-suggestions-dropdown');
+                            data.suggestions.forEach(item => {
+                                const suggestionLink = document.createElement('a');
+                                suggestionLink.classList.add('suggestion-item');
+                                suggestionLink.textContent = item.name;
+                                suggestionLink.href = `/item/${encodeURIComponent(item.name)}/`; // Match your URL
+                                dropdown.appendChild(suggestionLink);
+                            });
+                            searchInput.parentElement.parentElement.appendChild(dropdown); // Append dropdown to the input-group
+                            currentDropdown = dropdown; // Track the new dropdown
+                        });
+                } else {
+                    if (currentDropdown) {
+                        currentDropdown.remove(); // Remove dropdown if query is too short
+                        currentDropdown = null;
+                    }
+                }
+            });
+        
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!searchInput.contains(event.target) && currentDropdown) {
+                    currentDropdown.remove();
+                    currentDropdown = null;
+                }
+            });
+        </script>
+
+        
+    </body>
+    </html>

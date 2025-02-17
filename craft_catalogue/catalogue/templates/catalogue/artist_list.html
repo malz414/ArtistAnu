@@ -1,0 +1,32 @@
+<!-- artist_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Our Artists</h1>
+<div class="artists">
+    {% for artist in artists %}
+    <div class="artist">
+        <h2>{{ artist.name }}</h2>
+        {% if artist.profile_picture %}
+            <img src="{{ artist.profile_picture.url }}" alt="{{ artist.name }}'s profile picture" width="100" height="100">
+        {% else %}
+            <p>No profile picture available</p>
+        {% endif %}
+        <p><strong>Bio:</strong> {{ artist.bio }}</p>
+        <p><strong>Email:</strong> {{ artist.email }}</p>
+        <p><strong>Location:</strong> {{ artist.location }}</p>
+        {% if artist.website %}
+            <p><strong>Website:</strong> <a href="{{ artist.website }}" target="_blank">{{ artist.website }}</a></p>
+        {% endif %}
+        {% if artist.social_media_links %}
+            <p><strong>Social Media:</strong></p>
+            <ul>
+                {% for key, value in artist.social_media_links.items %}
+                    <li><strong>{{ key }}:</strong> <a href="{{ value }}" target="_blank">{{ value }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

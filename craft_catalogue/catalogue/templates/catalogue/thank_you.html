@@ -1,0 +1,27 @@
+<!-- catalogue/templates/catalogue/cart_detail.html -->
+<h2>Your Cart</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart.items.all %}
+        <tr>
+            <td>{{ item.item.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.item.price }} USD</td>
+            <td>{{ item.total_price }} USD</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Total: {{ cart.total_price }} USD</h3>
+
+<a href="{% url 'checkout' %}" class="btn btn-success">Checkout</a>

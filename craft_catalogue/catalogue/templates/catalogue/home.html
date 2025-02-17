@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="container">
+    <!-- Featured Section -->
+     <p>Welcome to ArtistAnu – Where Art Meets Antigua!
+
+        Hundreds of talented artists and artisans... a vibrant community of creators... a treasure trove of unique, handmade crafts and art... all rooted in the rich culture and beauty of Antigua.
+        
+        At ArtistAnu, we’re more than a marketplace – we’re a bridge that connects artists, collectors, and art lovers. Discover one-of-a-kind pieces that tell the story of Antigua, from stunning paintings and intricate pottery to handcrafted jewelry and textiles.
+        
+        Every purchase you make supports local talent, preserves our cultural heritage, and brings the spirit of Antigua into your home.
+        
+        Join us in celebrating the creativity, passion, and craftsmanship of Antiguan artists. Together, let’s find the best things Antigua has to offer.</p>
+     
+    {% if featured_item %}
+    <div class="featured-item container-fluid mt-4">
+        <h2 class="text-center mb-4">Featured Item</h2>
+        <div class="row">
+            <!-- Image Section -->
+            <div class="col-md-1">
+              </div>
+            <div class="col-md-5">
+              {% if featured_item.images.all %}
+                  <!-- Main Image -->
+                  <img id="featuredMainImage" src="{{ featured_item.images.first.image.url }}" alt="{{ featured_item.name }}" class="img-fluid main-img">
+          
+                  <!-- Thumbnails Container -->
+                  <div class="image-thumbnails d-flex flex-wrap mt-2">
+                      {% for image in featured_item.images.all %}
+                          <img src="{{ image.image.url }}" alt="{{ featured_item.name }}" class="img-thumbnail thumb-img" onclick="changeFeaturedMainImage('{{ image.image.url }}')">
+                      {% endfor %}
+                  </div>
+              {% else %}
+                  <p class="text-muted">No image available</p>
+              {% endif %}
+          </div>
+
+            <!-- Details Section -->
+            <div class="col-md-5">
+                <h3>{{ featured_item.name }}</h3>
+                <p><strong>Price:</strong> {{ featured_item.price }} USD</p>
+                <p><strong>Description:</strong> {{ featured_item.description }}</p>
+                <p><strong>Dimensions:</strong> {{ featured_item.dimensions }}</p>
+                <p><strong>Artist:</strong> <a href="{% url 'artist_detail' featured_item.artist.name %}">{{ featured_item.artist.name }}</a></p>
+                <p><strong>Status:</strong> 
+                    {% if featured_item.available %}
+                        <span class="text-success">Available</span>
+                    {% else %}
+                        <span class="text-danger">Sold Out</span>
+                    {% endif %}
+                </p>
+                <a href="{% url 'add_to_cart' featured_item.id %}" class="btn btn-success btn-lg">Add to Cart</a>
+            </div>
+            <div class="col-md-1">
+            </div>
+        </div>
+    </div>
+{% else %}
+    <p>No featured item available.</p>
+{% endif %}
+</div>
+
+<div class="container-fluid" style="background-color: #ffffff;">
+<!-- Category Section -->
+<h2>Categories</h2>
+<div class="categories d-flex flex-wrap justify-content-between">
+    {% for category in categories %}
+        <div class="category-card mb-4 col-12 col-sm-6 col-md-3" style="width: 20%;"> <!-- 4 items per row -->
+            <a href="{% url 'dashboard' %}?category={{ category.name }}">
+                <!-- Replace the text with an image -->
+                <img src="{% static 'images/categories/' %}{{ forloop.counter|add:1 }}.png" alt="{{ category.name }}" class="img-fluid">
+                <!--<h3 class="text-center mt-2">{{ category.name }}</h3>  Optional: Display category name below image -->
+            </a>
+        </div>
+    {% endfor %}
+</div>
+<script>
+  function changeFeaturedMainImage(imageUrl) {
+      document.getElementById('featuredMainImage').src = imageUrl;
+  }
+</script>
+
+<style>
+
+  .main-img {
+      width: 100%;
+      height: 400px; /* Standard size */
+      object-fit: contain;  border-radius: 15px;
+      border:dashed 2px #41403E;
+      border-top-left-radius: 255px 15px;
+      border-top-right-radius: 15px 225px;
+      border-bottom-right-radius: 225px 15px;
+      border-bottom-left-radius:15px 255px;
+ 
+      background: #f8f8f8;
+  }
+
+  .image-thumbnails {
+      display: flex;
+      flex-wrap: wrap;
+      
+      gap: 5px; /* Space between thumbnails */
+      margin-top: 10px;
+  }
+
+  .thumb-img {
+      width: 80px; /* Thumbnail size */
+      height: 80px;
+      object-fit: cover; /* Ensures the image fits within the thumbnail */
+      cursor: pointer;
+      border:dashed 2px #41403E;
+      border-top-left-radius: 255px 15px;
+      border-top-right-radius: 15px 225px;
+      border-bottom-right-radius: 225px 15px;
+      border-bottom-left-radius:15px 255px;
+      transition: transform 0.2s;
+  }
+
+  .thumb-img:hover {
+      transform: scale(1.1); /* Slight zoom on hover */
+  }
+
+  .featured-item {
+      margin-bottom: 40px;
+  }
+/* Category Section Styling */
+.categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Space between images */
+    justify-content: space-between;
+}
+
+.category-card {
+    width: 23%; /* Adjust width for 4 items per row */
+    overflow: hidden; /* Ensures the image doesn't overflow */
+}
+
+.category-card img {
+    width: 100%;
+/* Adjust height as needed */
+    object-fit: cover; /* Ensures the image covers the area */
+    transition: transform 0.2s ease; /* Smooth hover effect */
+}
+
+.category-card img:hover {
+    transform: scale(1.05); /* Slight zoom on hover */
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            {% if item.images.all %}
+                <img id="mainImage" src="{{ item.images.first.image.url }}" alt="{{ item.name }}" class="img-fluid main-img">
+                <div class="image-thumbnails">
+                    {% for image in item.images.all %}
+                        <img src="{{ image.image.url }}" alt="{{ item.name }}" class="img-thumbnail thumb-img" onclick="changeMainImage('{{ image.image.url }}')">
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">No image available</p>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h1>{{ item.name }}</h1>
+            <p><strong>Price:</strong> {{ item.price }} USD</p>
+            <p><strong>Description:</strong> {{ item.description }}</p>
+            <p><strong>Dimensions:</strong> {{ item.dimensions }}</p>
+            <p><strong>Creator:</strong> <a href="{% url 'artist_detail' item.artist.name %}">{{ item.artist.name }}</a></p>
+            <p><strong>Status:</strong> 
+                {% if item.available %}
+                    <span class="text-success">Available</span>
+                {% elif item.in_cart %}
+                    <span class="text-warning">Reserved</span>
+                {% else %}
+                    <span class="text-danger">Sold Out</span>
+                {% endif %}
+            </p>
+            
+            <a href="{% url 'add_to_cart' item.id %}" class="btn btn-success btn-lg"> Add to Cart</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function changeMainImage(imageUrl) {
+        document.getElementById('mainImage').src = imageUrl;
+    }
+</script>
+
+<style>
+    .main-img {
+        width: 100%;
+        height: 400px; /* Standard size */
+        object-fit: contain;
+        border: 1px solid #ddd;
+        padding: 5px;
+        background: #f8f8f8;
+    }
+
+    .thumb-img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        cursor: pointer;
+        border: 1px solid #ccc;
+        margin: 5px;
+        transition: transform 0.2s;
+    }
+
+    .thumb-img:hover {
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}

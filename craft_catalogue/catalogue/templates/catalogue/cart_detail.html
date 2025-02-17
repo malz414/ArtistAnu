@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Your Cart</h2>
+
+{% if cart.cart_items.all %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cart_item in cart.cart_items.all %}
+            <tr>
+                <td>
+                    {% if cart_item.item.images %}
+                        <img src="{{ cart_item.item.images.url }}" alt="{{ cart_item.item.name }}" width="50">
+                    {% else %}
+                        No image available
+                    {% endif %}
+                </td>
+                <td>
+                    {% if cart_item.item.name %}
+                        <a href="{% url 'item_detail' cart_item.item.name %}">{{ cart_item.item.name }}</a>
+                    {% else %}
+                        No name available
+                    {% endif %}
+                </td>
+                <td>{{ cart_item.quantity }}</td>
+                <td>{{ cart_item.item.price }} USD</td>
+                <td>{{ cart_item.total_price }} USD</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Total: {{ cart.total_price }} USD
+
+    </h3>
+    <a href="{% url 'clear_cart' %}" class="btn btn-danger">Clear Cart</a>
+    <a href="{% url 'checkout' %}" class="btn btn-success">Proceed to Checkout</a>
+    
+{% else %}
+    <p>Your cart is empty.</p>
+{% endif %}
+
+{% endblock %}

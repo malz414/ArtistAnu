@@ -1,0 +1,222 @@
+/* Ensure the footer stays at the bottom */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-weight: 300;
+    font-size: large;
+    background-color: #F8F8F8;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    
+}
+
+.navbar-brand, .nav-link {
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+}
+
+.btn {
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+}
+/* Main content should fill available space */
+.container {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Style the navigation bar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure the cart button is aligned to the right */
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.nav-item {
+    margin-right: 15px;
+}
+
+.navbar-nav li:last-child {
+    margin-left: auto; /* Push the cart button to the right */
+}
+
+.cart-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.cart-button:hover {
+    background-color: #218838;
+}
+
+/* Containers */
+.cart-container, .item-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+/* List styling */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    padding: 5px;
+    /* border-bottom: 1px solid #ddd; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+li:last-child {
+    border-bottom: none;
+}
+
+li:hover {
+    background-color: #28a745;
+}
+
+/* Buttons */
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+/* Footer styling */
+footer {
+    
+    background-color: #ffffff;
+    text-align: center;
+    padding: 15px;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .cart-container, .item-container {
+        padding: 15px;
+        max-width: 90%;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .cart-button {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+}
+
+.featured-item-image {
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 400px !important;
+}
+
+footer p {
+    white-space: nowrap;
+}
+
+footer a.nav-link {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+.category-item-image {
+    max-width: 100%;   /* Ensure it doesn't exceed its container width */
+    height: auto;      /* Maintain aspect ratio */
+    max-height: 300px; /* Limit height to 300px (adjust as needed) */
+}
+.dropdown-menu {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.dropdown-menu li {
+    padding: 0;
+    border:dashed 2px #41403E;
+ 
+
+    
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: #218838 !important;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* Add this to your CSS file or <style> tag */
+.search-suggestions-dropdown {
+    position: absolute;
+    top: 88%; /* Positions dropdown right below the input */
+    left: 0;
+    width: 100%; /* Matches the width of the search input */
+    background: rgb(212, 212, 212); /* Background color */
+    border: 1px solid #ddd; /* Border */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for better visibility */
+    z-index: 1000; /* Ensure it appears above other elements */
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.suggestion-item {
+    padding: 8px;
+    cursor: pointer;
+    display: block; /* Ensure links are block-level for full width */
+    text-decoration: none; /* Remove underline */
+    color: #333; /* Text color */
+    border-bottom: 1px solid #eee; /* Separator between items */
+}
+
+.suggestion-item:hover {
+    background: #218838; /* Hover effect */
+}
+
+/* Remove border from the last item */
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+

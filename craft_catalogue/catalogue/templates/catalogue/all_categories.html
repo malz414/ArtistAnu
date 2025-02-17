@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center my-4">Item Dashboard</h1>
+
+    {% for category in categories %}
+    <div class="category-section my-4">
+        <h2>{{ category.name }}</h2>
+
+        <!-- Carousel Container -->
+        <div class="position-relative">
+            <!-- Left Arrow (Hidden on Mobile) -->
+            <button class="carousel-btn left d-none d-md-block" onclick="scrollLeft('{{ category.id }}')">‹</button>
+            
+            <!-- Carousel Items -->
+            <div class="row flex-nowrap overflow-auto" id="carousel-{{ category.id }}" style="scroll-behavior: smooth;">
+                {% for item in category.items.all|slice:":8" %}
+                <div class="col-6 col-md-3"> <!-- 2 items per row on mobile, 4 on desktop -->
+                    <div class="card h-100">
+                        <a href="{% url 'item_detail' item.name %}">
+                            {% with item.images.first as first_image %}
+                                {% if first_image %}
+                                    <img src="{{ first_image.image.url }}" class="card-img-top" alt="{{ item.name }}" style="height: 30vh; object-fit: cover;">
+                                {% else %}
+                                    <img src="/static/default-image.jpg" class="card-img-top" alt="No image available" style="height: 30vh; object-fit: cover;">
+                                {% endif %}
+                            {% endwith %}
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.name }}</h5>
+                            <p class="card-text">Price: ${{ item.price|floatformat:2 }}</p>
+                            <a href="{% url 'item_detail' item.name %}" class="btn btn-primary btn-sm">View</a>
+                            <a href="{% url 'add_to_cart' item.id %}" class="btn btn-success btn-sm">🛒 Add</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Right Arrow (Hidden on Mobile) -->
+            <button class="carousel-btn right d-none d-md-block" onclick="scrollRight('{{ category.id }}')">›</button>
+        </div>
+        
+
+        <!-- See All Button -->
+        <div class="text-end mt-2">
+            <a href="{% url 'category_items' category.name %}" class="btn btn-outline-dark btn-sm">See All {{category.name}}→</a>
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-dark btn-sm">See All →</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- JS for Carousel Scrolling -->
+<script>
+    function scrollLeft(categoryId) {
+        const carousel = document.getElementById(`carousel-${categoryId}`);
+        carousel.scrollBy({ left: -carousel.offsetWidth, behavior: 'smooth' });
+    }
+
+    function scrollRight(categoryId) {
+        const carousel = document.getElementById(`carousel-${categoryId}`);
+        carousel.scrollBy({ left: carousel.offsetWidth, behavior: 'smooth' });
+    }
+</script>
+
+<!-- CSS for Styling -->
+<style>
+    /* Carousel Buttons */
+    .carousel-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        z-index: 1;
+    }
+
+    .carousel-btn.left {
+        left: 0;
+    }
+
+    .carousel-btn.right {
+        right: 0;
+    }
+
+    /* Hide scrollbar */
+    .row.flex-nowrap.overflow-auto {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .row.flex-nowrap.overflow-auto::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, and Opera */
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 767.98px) {
+        .col-6 {
+            flex: 0 0 50%; /* 2 items per row on mobile */
+            max-width: 50%;
+        }
+
+        .card-img-top {
+            height: 20vh !important; /* Smaller images on mobile */
+        }
+    }
+</style>
+{% endblock %}
