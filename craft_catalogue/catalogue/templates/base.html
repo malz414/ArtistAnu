@@ -45,8 +45,14 @@
                 {% else %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Sign Up</a></li>
+                    <li><a href="{% url 'artist_signup' %}">Sign Up as Artist</a></li>
                 {% endif %}
                 
+                <li>
+                {% if user.is_authenticated and user.is_artist %}
+                    <a href="{% url 'artist_dashboard' %}">Artist Dashboard</a>
+                {% endif %}
+                </li>
                 <!-- Cart -->
                 <li class="nav-item">
                     <a href="{% url 'cart_detail' %}">
@@ -119,7 +125,6 @@
         <!-- Footer and other content -->
      
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
         <script>
             const searchInput = document.querySelector('input[name="search"]');
             const searchForm = document.querySelector('form[method="GET"]');
@@ -136,13 +141,40 @@
                         .then(data => {
                             const dropdown = document.createElement('div');
                             dropdown.classList.add('search-suggestions-dropdown');
+        
                             data.suggestions.forEach(item => {
+                                const suggestionDiv = document.createElement('div');
+                                suggestionDiv.classList.add('suggestion-item');
+        
+                                // Add image
+                                if (item.image) {
+                                    const image = document.createElement('img');
+                                    image.src = item.image;
+                                    image.classList.add('suggestion-image');
+                                    suggestionDiv.appendChild(image);
+                                }
+        
+                                // Add name
+                                const name = document.createElement('span');
+                                name.textContent = item.name;
+                                name.classList.add('suggestion-name');
+                                suggestionDiv.appendChild(name);
+        
+                                // Add price
+                                if (item.price) {
+                                    const price = document.createElement('span');
+                                    price.textContent = ` - $${item.price}`; // Format price as needed
+                                    price.classList.add('suggestion-price');
+                                    suggestionDiv.appendChild(price);
+                                }
+        
+                                // Add link
                                 const suggestionLink = document.createElement('a');
-                                suggestionLink.classList.add('suggestion-item');
-                                suggestionLink.textContent = item.name;
                                 suggestionLink.href = `/item/${encodeURIComponent(item.name)}/`; // Match your URL
+                                suggestionLink.appendChild(suggestionDiv);
                                 dropdown.appendChild(suggestionLink);
                             });
+        
                             searchInput.parentElement.parentElement.appendChild(dropdown); // Append dropdown to the input-group
                             currentDropdown = dropdown; // Track the new dropdown
                         });
@@ -162,6 +194,87 @@
                 }
             });
         </script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".item-card").forEach(function(card) {
+        let img = card.querySelector(".item-image");
+        if (!img) return; // Skip if no image is found
+
+        let firstImage = img.getAttribute("data-first");
+        let secondImage = img.getAttribute("data-second");
+
+        if (secondImage) {
+            // Preload the second image
+            let preloader = new Image();
+            preloader.src = secondImage;
+
+            // Function to gradually change opacity
+            function animateOpacity(element, start, end, duration, callback) {
+                let startTime = null;
+                function animation(currentTime) {
+                    if (!startTime) startTime = currentTime;
+                    let progress = currentTime - startTime;
+                    let fraction = Math.min(progress / duration, 1);
+                    element.style.opacity = start + (end - start) * fraction;
+                    if (fraction < 1) {
+                        requestAnimationFrame(animation);
+                    } else if (callback) {
+                        callback();
+                    }
+                }
+                requestAnimationFrame(animation);
+            }
+
+            card.addEventListener("mouseenter", function() {
+                // Fade out the first image gradually
+                animateOpacity(img, 1, .6, 200, function() {
+                    // Once fully faded, switch image and fade in
+                    img.src = secondImage;
+                    animateOpacity(img, 0.6, 1, 200);
+                });
+            });
+
+            card.addEventListener("mouseleave", function() {
+                // Fade out the second image gradually
+                animateOpacity(img, 1, .6, 200, function() {
+                    // Switch back to first image and fade in
+                    img.src = firstImage;
+                    animateOpacity(img, 0.6, 1, 200);
+                });
+            });
+        }
+    });
+});
+
+</script>
+
+
+<!-- JS for Carousel Scrolling -->
+<script>
+    function scrollLeft(categoryId) {
+        const carousel = document.getElementById(`carousel-${categoryId}`);
+        carousel.scrollBy({ left: -carousel.offsetWidth, behavior: 'smooth' });
+    }
+
+    function scrollRight(categoryId) {
+        const carousel = document.getElementById(`carousel-${categoryId}`);
+        carousel.scrollBy({ left: carousel.offsetWidth, behavior: 'smooth' });
+    }
+</script>
+
+
+<!-- JS for Carousel Scrolling -->
+<script>
+    function scrollLeft(categoryId) {
+        const carousel = document.getElementById(`carousel-${categoryId}`);
+        carousel.scrollBy({ left: -carousel.offsetWidth, behavior: 'smooth' });
+    }
+
+    function scrollRight(categoryId) {
+        const carousel = document.getElementById(`carousel-${categoryId}`);
+        carousel.scrollBy({ left: carousel.offsetWidth, behavior: 'smooth' });
+    }
+</script>
 
         
     </body>

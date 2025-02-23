@@ -184,47 +184,103 @@ footer a.nav-link {
 }
 .card
 {
-    border:solid 2px #41403E;
-    border-top-left-radius: 25px 15px;
-    border-top-right-radius: 15px 25px;
-    border-bottom-right-radius: 22px 15px;
-    border-bottom-left-radius:15px 25px;
+    border:solid 1px #41403E;
+    
+    border-radius: 0;
+
 }
 
 .card:hover {
     transform: scale(1.02);
 }
 
-/* Add this to your CSS file or <style> tag */
-.search-suggestions-dropdown {
+.card-title {
+    font-size: 28px; /* Adjust the font size as needed */
+}
+
+    .search-suggestions-dropdown {
+        position: absolute;
+        background: white;
+        border: 1px solid #ccc;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+    }
+
+    .suggestion-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        
+    }
+
+    .suggestion-item:hover {
+        background: #f5f5f5;
+    }
+
+    .suggestion-image {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+        object-fit: cover;
+    }
+
+    .suggestion-name {
+        
+       
+        flex-grow: 1;
+    }
+
+    .suggestion-price {
+    
+        color: #888;
+    }
+    .search-suggestions-dropdown .suggestion-item .suggestion-name {
+        color: #000;
+        text-decoration: none;
+    }
+    
+
+.search-suggestions-dropdown a {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+/* Container for the images: fixes height and makes it responsive */
+.item-card .img-container {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 200px; /* Fixed height for the image area */
+    overflow: hidden;
+}
+
+/* Base styles for all images inside the container */
+.item-card .img-container img {
     position: absolute;
-    top: 88%; /* Positions dropdown right below the input */
+    top: 0;
     left: 0;
-    width: 100%; /* Matches the width of the search input */
-    background: rgb(212, 212, 212); /* Background color */
-    border: 1px solid #ddd; /* Border */
-    border-radius: 4px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for better visibility */
-    z-index: 1000; /* Ensure it appears above other elements */
-    max-height: 200px;
-    overflow-y: auto;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.5s ease-in-out;
 }
 
-.suggestion-item {
-    padding: 8px;
-    cursor: pointer;
-    display: block; /* Ensure links are block-level for full width */
-    text-decoration: none; /* Remove underline */
-    color: #333; /* Text color */
-    border-bottom: 1px solid #eee; /* Separator between items */
+/* The default (first) image is fully visible */
+.item-card .item-image {
+    opacity: 1;
 }
 
-.suggestion-item:hover {
-    background: #218838; /* Hover effect */
+/* The hover image is hidden by default */
+.item-card .hover-image {
+    opacity: 0;
 }
 
-/* Remove border from the last item */
-.suggestion-item:last-child {
-    border-bottom: none;
+/* On hover, fade out the first image and fade in the second */
+.item-card:hover .hover-image {
+    opacity: 1;
 }
-
+.item-card:hover .item-image {
+    opacity: 0;
+}

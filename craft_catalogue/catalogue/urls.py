@@ -36,6 +36,13 @@ urlpatterns = [
     path('login/', views.custom_login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('signup/', views.signup, name='signup'),
+    path('artist_signup/', views.artist_signup, name='artist_signup'),
+
+    path('artist_dashboard/', views.artist_dashboard, name='artist_dashboard'),
+    path('add_craft_item/', views.add_craft_item, name='add_craft_item'),
+    path('edit_craft_item/<int:item_id>/', views.edit_craft_item, name='edit_craft_item'),
+    path('edit_artist_profile/', views.edit_artist_profile, name='edit_artist_profile'),
+    path('add_craft_item/', views.add_craft_item, name='add_craft_item'),
 
     path('dashboard/', views.dashboard, name='dashboard'),
     

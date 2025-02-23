@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card p-4 shadow">
+                <h1 class="text-center mb-4">Edit Craft Item</h1>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        {{ item_form.as_p }}
+                    </div>
+
+                    <h2 class="mt-4">Existing Images</h2>
+                    {% for image in existing_images %}
+                        <div class="mb-3">
+                            <img src="{{ image.image.url }}" alt="{{ craft_item.name }}" width="100" class="img-thumbnail">
+                            <label class="form-check-label ms-2">
+                                <input type="checkbox" name="delete_images" value="{{ image.id }}" class="form-check-input"> Delete
+                            </label>
+                        </div>
+                    {% endfor %}
+
+                    <h2 class="mt-4">Add New Image</h2>
+                    <div class="mb-3">
+                        {{ image_form.as_p }}
+                    </div>
+
+                    <button type="submit" class="cart-button w-100">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

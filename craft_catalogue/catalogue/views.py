@@ -1,36 +1,175 @@
 # catalogue/views.py
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import CraftItem, Cart, CartItem, Artist, FeaturedItem, Category  
+from .models import CraftItem, Cart, CartItem, Artist, FeaturedItem, Category, CraftItemImage
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm  
 # catalogue/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
-from .forms import SignUpForm, CustomAuthenticationForm  # Ensure these forms are defined in forms.py
+from .forms import SignUpForm, CustomAuthenticationForm, ArtistProfileForm, ArtistSignUpForm  # Ensure these forms are defined in forms.py
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.db.models.functions import Lower
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.http import JsonResponse
 from django.utils import timezone
 from django.http import JsonResponse
+from .forms import CraftItemForm, CraftItemImageForm, ArtistProfileForm
+from django.forms import formset_factory
+
+
+@login_required
+def add_craft_item(request):
+    if not request.user.is_artist:
+        return redirect('home')
+
+    artist = get_object_or_404(Artist, user=request.user)
+    ImageFormSet = formset_factory(CraftItemImageForm, extra=3)  # Allow up to 3 images
+
+    if request.method == 'POST':
+        item_form = CraftItemForm(request.POST)
+        image_formset = ImageFormSet(request.POST, request.FILES)
+        if item_form.is_valid() and image_formset.is_valid():
+            # Save the CraftItem
+            craft_item = item_form.save(commit=False)
+            craft_item.artist = artist
+            craft_item.save()
+            item_form.save_m2m()
+
+            # Save the CraftItemImages
+            for form in image_formset:
+                if form.cleaned_data.get('image'):
+                    craft_item_image = form.save(commit=False)
+                    craft_item_image.craft_item = craft_item
+                    craft_item_image.save()
+
+            return redirect('artist_dashboard')
+    else:
+        item_form = CraftItemForm()
+        image_formset = ImageFormSet()
+
+    return render(request, 'catalogue/add_craft_item.html', {
+        'item_form': item_form,
+        'image_formset': image_formset,
+    })
+
+
+
+@login_required
+def edit_craft_item(request, item_id):
+    if not request.user.is_artist:
+        return redirect('home')
+
+    artist = get_object_or_404(Artist, user=request.user)
+    craft_item = get_object_or_404(CraftItem, id=item_id, artist=artist)
+    existing_images = craft_item.images.all()  # Get existing images
+
+    if request.method == 'POST':
+        item_form = CraftItemForm(request.POST, instance=craft_item)
+        image_form = CraftItemImageForm(request.POST, request.FILES)
+        if item_form.is_valid() and image_form.is_valid():
+            item_form.save()
+
+            # Save the new image if provided
+            if image_form.cleaned_data.get('image'):
+                craft_item_image = image_form.save(commit=False)
+                craft_item_image.craft_item = craft_item
+                craft_item_image.save()
+
+            # Handle image deletion
+            if 'delete_images' in request.POST:
+                deleted_image_ids = request.POST.getlist('delete_images')
+                CraftItemImage.objects.filter(id__in=deleted_image_ids).delete()
+
+            return redirect('artist_dashboard')
+    else:
+        item_form = CraftItemForm(instance=craft_item)  # Pre-fill the form with existing data
+        image_form = CraftItemImageForm()
+
+    return render(request, 'catalogue/edit_craft_item.html', {
+        'item_form': item_form,
+        'image_form': image_form,
+        'existing_images': existing_images,  # Pass existing images to the template
+    })
+
 
 
 def search_items(request):
     query = request.GET.get('query', '')
     if query:
-        # Filter CraftItems based on the search query (case-insensitive)
-        items = CraftItem.objects.filter(name__icontains=query)[:5]  # Limiting to 5 items
-        suggestions = [{'name': item.name} for item in items]
+        # Fetch CraftItems and prefetch related images in a single query
+        items = CraftItem.objects.filter(
+            Q(name__icontains=query) | Q(description__icontains=query)
+        ).prefetch_related('images')[:5]  # Limiting to 5 items
+
+        suggestions = []
+        for item in items:
+            # Get the first image associated with the CraftItem
+            first_image = item.images.first()
+            image_url = first_image.image.url if first_image else ''
+
+            suggestions.append({
+                'name': item.name,
+                'image': image_url,  # Include image URL
+                'price': str(item.price)  # Include price as a string
+            })
         return JsonResponse({'items': suggestions})
     return JsonResponse({'items': []})
+
+@login_required
+def artist_dashboard(request):
+    if not request.user.is_artist:
+        return redirect('home')  # Redirect non-artists to the home page
+
+    artist = get_object_or_404(Artist, user=request.user)
+    craft_items = CraftItem.objects.filter(artist=artist)
+
+    return render(request, 'catalogue/artist_dashboard.html', {
+        'artist': artist,
+        'craft_items': craft_items,
+    })
+
+@login_required
+def edit_artist_profile(request):
+    if not request.user.is_artist:
+        return redirect('home')
+
+    artist = get_object_or_404(Artist, user=request.user)
+    if request.method == 'POST':
+        form = ArtistProfileForm(request.POST, request.FILES, instance=artist)
+        if form.is_valid():
+            form.save()
+            return redirect('artist_dashboard')
+    else:
+        form = ArtistProfileForm(instance=artist)  # Pre-fill the form with existing data
+
+    return render(request, 'catalogue/edit_artist_profile.html', {
+        'form': form,
+    })
 
 def search_suggestions(request):
     query = request.GET.get('query', '')
     if query:
-        items = CraftItem.objects.filter(name__icontains=query)[:5]  # Get top 5 suggestions
-        suggestions = [{'name': item.name} for item in items]
+        # Fetch CraftItems and prefetch all related images
+        items = CraftItem.objects.filter(
+            Q(name__icontains=query) | Q(description__icontains=query)
+        ).prefetch_related(
+            Prefetch('images', queryset=CraftItemImage.objects.all())
+        )[:5]  # Limit to 5 CraftItems
+
+        suggestions = []
+        for item in items:
+            # Get the first image associated with the CraftItem
+            first_image = item.images.first()
+            image_url = first_image.image.url if first_image else ''
+
+            suggestions.append({
+                'name': item.name,
+                'image': image_url,  # Include image URL
+                'price': str(item.price)  # Include price as a string
+            })
+
         return JsonResponse({'suggestions': suggestions})
     return JsonResponse({'suggestions': []})
 
@@ -128,6 +267,7 @@ def custom_login_view(request):
 
     return render(request, 'login.html', {'form': form}) 
 
+
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -141,14 +281,50 @@ def signup(request):
     
     return render(request, 'signup.html', {'form': form})
 
+def artist_signup(request):
+    if request.method == 'POST':
+        form = ArtistSignUpForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_artist = True
+            user.save()
+
+            # Create the artist profile
+            artist = Artist(
+                user=user,
+                name=form.cleaned_data['name'],
+                bio=form.cleaned_data['bio'],
+                profile_picture=form.cleaned_data['profile_picture'],
+                phone_number=form.cleaned_data['phone_number'],
+                website=form.cleaned_data['website'],
+                social_media_links=form.cleaned_data['social_media_links'],
+                location=form.cleaned_data['location']
+            )
+            artist.save()
+
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            login(request, user)
+            return redirect('home')
+        else:
+            # Print form errors to the console
+            print(form.errors)
+    else:
+        form = ArtistSignUpForm()
+    return render(request, 'artist_signup.html', {'form': form})
+
+
+
 def home(request):
     featured_item = CraftItem.objects.filter(featured=True, available=True).first()
+    recent_items = CraftItem.objects.filter(available=True).order_by('-date_created')[:8]
 
     context = {
         'featured_item': featured_item,
+        'recent_items': recent_items,
         'categories': Category.objects.all(),
     }
     return render(request, 'catalogue/home.html', context)
+
 
 
 def catalogue(request):
@@ -216,9 +392,9 @@ def add_to_cart(request, item_id):
         cart_item.quantity += 1
         cart_item.save()
 
-    if item.is_unique:
-        item.available = False
-        item.save()
+    # if item.is_unique:
+    #     item.available = False
+    #     item.save()
 
     return redirect(request.META.get('HTTP_REFERER', 'home'))
 

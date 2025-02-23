@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card p-4 shadow">
+                <h1 class="text-center mb-4">Artist Signup</h1>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">Username</label><br>
+                        {{ form.username }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">Email</label><br>
+                        {{ form.email }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label">Password</label><br>
+                        {{ form.password1 }}
+                        <small class="form-text text-muted"><br>
+                            Your password must be at least 8 characters long and contain a mix of letters and numbers.
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label">Confirm Password</label><br>
+                        {{ form.password2 }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.profile_picture.id_for_label }}" class="form-label">Profile Picture</label><br>
+                        {{ form.profile_picture }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">Name</label><br>
+                        {{ form.name }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.bio.id_for_label }}" class="form-label">Bio</label><br>
+                        {{ form.bio }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.phone_number.id_for_label }}" class="form-label">Phone Number</label><br>
+                        {{ form.phone_number }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.website.id_for_label }}" class="form-label">Website</label><br>
+                        {{ form.website }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.social_media_links.id_for_label }}" class="form-label">Social Media Links</label><br>
+                        {{ form.social_media_links }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.location.id_for_label }}" class="form-label">Location</label><br>
+                        {{ form.location }}
+                    </div>
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong> Please correct the errors below.
+                        {{ form.errors }}
+                    </div>
+                    {% endif %}
+
+                    <button type="submit" class="cart-button w-100">Sign Up as Artist</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

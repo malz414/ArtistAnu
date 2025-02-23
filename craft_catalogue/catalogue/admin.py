@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Artist, CraftItem, Category, FeaturedItem, CraftItemImage, CartItem
+from .models import Artist, CraftItem, Category, FeaturedItem, CraftItemImage, CartItem, CustomUser
 
 class CategoryInline(admin.TabularInline):  # Inline form for categories
     model = CraftItem.categories.through  # This allows ManyToMany edits
@@ -35,6 +35,25 @@ class CraftItemImageInline(admin.TabularInline):
 
 class CraftItemAdmin(admin.ModelAdmin):
     inlines = [CraftItemImageInline]
+
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ('username', 'email', 'is_artist', 'is_staff', 'is_active')
+    list_filter = ('is_artist', 'is_staff', 'is_active')
+    fieldsets = (
+        (None, {'fields': ('username', 'email', 'password')}),
+        ('Permissions', {'fields': ('is_artist', 'is_staff', 'is_active')}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'password1', 'password2', 'is_artist', 'is_staff', 'is_active'),
+        }),
+    )
+    search_fields = ('username', 'email')
+    ordering = ('username',)
+
+# Register the CustomUser model
+admin.site.register(CustomUser, CustomUserAdmin)
 
 admin.site.register(CraftItemImage)
 admin.site.register(CraftItem, CraftItemAdmin)

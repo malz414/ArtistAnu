@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card p-4 shadow">
+                <h1 class="text-center mb-4">Artist Dashboard</h1>
+
+                <!-- Display Artist Profile -->
+                <div class="mb-4">
+                    <h2>Your Profile</h2>
+                    <p><strong>Name:</strong> {{ artist.name }}</p>
+                    <p><strong>Bio:</strong> {{ artist.bio }}</p>
+                    <p><strong>Email:</strong> {{ artist.email }}</p>
+                    <p><strong>Location:</strong> {{ artist.location }}</p>
+                    <a href="{% url 'edit_artist_profile' %}" class="btn btn-primary">Edit Profile</a>
+                </div>
+
+                <!-- Display Craft Items -->
+                <div>
+                    <h2>Your Craft Items</h2>
+                    <a href="{% url 'add_craft_item' %}" class="btn btn-success mb-3">Add New Craft Item</a>
+                    <ul class="list-group">
+                        {% for item in craft_items %}
+                            <li class="list-group-item">
+                                <a href="{% url 'edit_craft_item' item.id %}">{{ item.name }}</a>
+                                - {{ item.price }} USD
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">No items found.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

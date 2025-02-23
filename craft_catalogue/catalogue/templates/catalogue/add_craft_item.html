@@ -1,0 +1,20 @@
+<!-- add_craft_item.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row">
+<h1>Add New Craft Item</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ item_form.as_p }}
+    {{ image_formset.management_form }}
+    {% for form in image_formset %}
+        {{ form.as_p }}
+    {% endfor %}
+    <button type="submit">Add Item</button>
+</form>
+</div>
+</div>
+{% endblock %}

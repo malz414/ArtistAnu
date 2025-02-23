@@ -12,15 +12,14 @@
         Every purchase you make supports local talent, preserves our cultural heritage, and brings the spirit of Antigua into your home.
         
         Join us in celebrating the creativity, passion, and craftsmanship of Antiguan artists. Together, let’s find the best things Antigua has to offer.</p>
-     
+     </div>
     {% if featured_item %}
-    <div class="featured-item container-fluid mt-4">
-        <h2 class="text-center mb-4">Featured Item</h2>
+    <div class="featured-item container mt-4">
+        <h2 class="">Featured Item</h2>
         <div class="row">
             <!-- Image Section -->
-            <div class="col-md-1">
-              </div>
-            <div class="col-md-5">
+       
+            <div class="col-md-6">
               {% if featured_item.images.all %}
                   <!-- Main Image -->
                   <img id="featuredMainImage" src="{{ featured_item.images.first.image.url }}" alt="{{ featured_item.name }}" class="img-fluid main-img">
@@ -37,9 +36,9 @@
           </div>
 
             <!-- Details Section -->
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <h3>{{ featured_item.name }}</h3>
-                <p><strong>Price:</strong> {{ featured_item.price }} USD</p>
+               
                 <p><strong>Description:</strong> {{ featured_item.description }}</p>
                 <p><strong>Dimensions:</strong> {{ featured_item.dimensions }}</p>
                 <p><strong>Artist:</strong> <a href="{% url 'artist_detail' featured_item.artist.name %}">{{ featured_item.artist.name }}</a></p>
@@ -50,20 +49,85 @@
                         <span class="text-danger">Sold Out</span>
                     {% endif %}
                 </p>
+                <p><strong>Price:</strong> {{ featured_item.price }} USD</p>
                 <a href="{% url 'add_to_cart' featured_item.id %}" class="btn btn-success btn-lg">Add to Cart</a>
             </div>
-            <div class="col-md-1">
-            </div>
+       
         </div>
     </div>
 {% else %}
     <p>No featured item available.</p>
 {% endif %}
+
+
 </div>
 
 <div class="container-fluid" style="background-color: #ffffff;">
+    <!-- Recent Items Carousel -->
+<div class="position-relative">
+    <!-- Left Arrow (Hidden on Mobile) -->
+    <button class="carousel-btn left d-none d-md-block" onclick="scrollLeft('recent-items')">‹</button>
+    
+    <!-- Carousel Items -->
+    <div class="row flex-nowrap overflow-auto p-5" id="carousel-recent-items" style="scroll-behavior: smooth;">
+        {% for item in recent_items %}
+        <div class="col-6 col-md-3"> <!-- 2 items per row on mobile, 4 on desktop -->
+            <div class="card h-100 p-2 item-card">
+                <a href="{% url 'item_detail' item.name %}" 
+                   style="display: flex; align-items: center; justify-content: center;">
+                    {% with item.images.all|slice:":2" as images %}
+                        {% if images|length > 0 %}
+                            <img src="{{ images.0.image.url }}" 
+                                 class="card-img-top item-image" 
+                                 alt="{{ item.name }}" 
+                                 style="height: 200px; width: 200px; object-fit: cover;"
+                                 data-first="{{ images.0.image.url }}"
+                                 {% if images|length > 1 %}
+                                     data-second="{{ images.1.image.url }}"
+                                 {% endif %}>
+                        {% else %}
+                            <img src="/static/default-image.jpg" 
+                                 class="card-img-top item-image" 
+                                 alt="No image available" 
+                                 style="height: 200px; width: 200px; object-fit: cover;">
+                        {% endif %}
+                    {% endwith %}
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <p class="card-text">Price: ${{ item.price|floatformat:2 }}</p>
+                    <a href="{% url 'item_detail' item.name %}" class="btn btn-primary btn-sm">View</a>
+                    <a href="{% url 'add_to_cart' item.id %}" class="btn btn-success btn-sm">🛒 Add</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Right Arrow (Hidden on Mobile) -->
+    <button class="carousel-btn right d-none d-md-block" onclick="scrollRight('recent-items')">›</button>
+</div>
+
+<!-- See All Button -->
+<div class="text-end mt-2">
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-dark btn-sm">See All →</a>
+</div>
+
+<!-- JS for Carousel Scrolling -->
+<script>
+    function scrollLeft(carouselId) {
+        const carousel = document.getElementById(`carousel-${carouselId}`);
+        carousel.scrollBy({ left: -carousel.offsetWidth, behavior: 'smooth' });
+    }
+
+    function scrollRight(carouselId) {
+        const carousel = document.getElementById(`carousel-${carouselId}`);
+        carousel.scrollBy({ left: carousel.offsetWidth, behavior: 'smooth' });
+    }
+</script>
 <!-- Category Section -->
-<h2>Categories</h2>
+<div class="container" style="background-color: #ffffff;">
+
 <div class="categories d-flex flex-wrap justify-content-between">
     {% for category in categories %}
         <div class="category-card mb-4 col-12 col-sm-6 col-md-3" style="width: 20%;"> <!-- 4 items per row -->
@@ -74,6 +138,7 @@
             </a>
         </div>
     {% endfor %}
+</div>
 </div>
 <script>
   function changeFeaturedMainImage(imageUrl) {
@@ -86,12 +151,9 @@
   .main-img {
       width: 100%;
       height: 400px; /* Standard size */
-      object-fit: contain;  border-radius: 15px;
-      border:dashed 2px #41403E;
-      border-top-left-radius: 255px 15px;
-      border-top-right-radius: 15px 225px;
-      border-bottom-right-radius: 225px 15px;
-      border-bottom-left-radius:15px 255px;
+      object-fit: contain;  border-radius: 0px;
+      border:solid 1px #41403E;
+
  
       background: #f8f8f8;
   }
@@ -109,11 +171,8 @@
       height: 80px;
       object-fit: cover; /* Ensures the image fits within the thumbnail */
       cursor: pointer;
-      border:dashed 2px #41403E;
-      border-top-left-radius: 255px 15px;
-      border-top-right-radius: 15px 225px;
-      border-bottom-right-radius: 225px 15px;
-      border-bottom-left-radius:15px 255px;
+      border-radius: 0px;
+      border:solid 1px #41403E;
       transition: transform 0.2s;
   }
 
@@ -147,6 +206,50 @@
 .category-card img:hover {
     transform: scale(1.05); /* Slight zoom on hover */
 }
+
+    /* Carousel Buttons */
+    .carousel-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        z-index: 1;
+    }
+
+    .carousel-btn.left {
+        left: 0;
+    }
+
+    .carousel-btn.right {
+        right: 0;
+    }
+
+    /* Hide scrollbar */
+    .row.flex-nowrap.overflow-auto {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .row.flex-nowrap.overflow-auto::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, and Opera */
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 767.98px) {
+        .col-6 {
+            flex: 0 0 50%; /* 2 items per row on mobile */
+            max-width: 50%;
+        }
+
+        .card-img-top {
+            height: 20vh !important; /* Smaller images on mobile */
+        }
+    }
+
 </style>
 
 {% endblock %}

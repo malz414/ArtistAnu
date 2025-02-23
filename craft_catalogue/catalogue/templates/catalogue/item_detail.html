@@ -6,7 +6,7 @@
         <div class="col-md-6">
             {% if item.images.all %}
                 <img id="mainImage" src="{{ item.images.first.image.url }}" alt="{{ item.name }}" class="img-fluid main-img">
-                <div class="image-thumbnails">
+                <div class="image-thumbnails d-flex flex-wrap mt-2" >
                     {% for image in item.images.all %}
                         <img src="{{ image.image.url }}" alt="{{ item.name }}" class="img-thumbnail thumb-img" onclick="changeMainImage('{{ image.image.url }}')">
                     {% endfor %}
@@ -17,7 +17,7 @@
         </div>
         <div class="col-md-6">
             <h1>{{ item.name }}</h1>
-            <p><strong>Price:</strong> {{ item.price }} USD</p>
+
             <p><strong>Description:</strong> {{ item.description }}</p>
             <p><strong>Dimensions:</strong> {{ item.dimensions }}</p>
             <p><strong>Creator:</strong> <a href="{% url 'artist_detail' item.artist.name %}">{{ item.artist.name }}</a></p>
@@ -30,7 +30,7 @@
                     <span class="text-danger">Sold Out</span>
                 {% endif %}
             </p>
-            
+            <p><strong>Price:</strong> {{ item.price }} USD</p>
             <a href="{% url 'add_to_cart' item.id %}" class="btn btn-success btn-lg"> Add to Cart</a>
         </div>
     </div>
@@ -47,20 +47,32 @@
         width: 100%;
         height: 400px; /* Standard size */
         object-fit: contain;
-        border: 1px solid #ddd;
-        padding: 5px;
+   
+        border-radius: 0px;
+        border:solid 1px #41403E;
+
         background: #f8f8f8;
+        
     }
+    
 
     .thumb-img {
-        width: 80px;
-        height: 80px;
-        object-fit: contain;
-        cursor: pointer;
-        border: 1px solid #ccc;
-        margin: 5px;
-        transition: transform 0.2s;
+      width: 80px; /* Thumbnail size */
+      height: 80px;
+      object-fit: cover; /* Ensures the image fits within the thumbnail */
+      cursor: pointer;
+      border-radius: 0px;
+      border:solid 1px #41403E;
+      transition: transform 0.2s;
     }
+
+    .image-thumbnails {
+      display: flex;
+      flex-wrap: wrap;
+      
+      gap: 5px; /* Space between thumbnails */
+      margin-top: 10px;
+  }
 
     .thumb-img:hover {
         transform: scale(1.1);

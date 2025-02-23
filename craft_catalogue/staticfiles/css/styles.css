@@ -182,9 +182,20 @@ footer a.nav-link {
 .dropdown-menu .dropdown-item:hover {
     background-color: #218838 !important;
 }
+.card
+{
+    border:solid 2px #41403E;
+    
+    border-radius: 0;
+
+}
 
 .card:hover {
     transform: scale(1.02);
+}
+
+.card-title {
+    font-size: 44px; /* Adjust the font size as needed */
 }
 
 /* Add this to your CSS file or <style> tag */

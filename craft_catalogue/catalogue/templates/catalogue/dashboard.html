@@ -2,8 +2,6 @@
 
 {% block content %}
 <div class="container-fluid">
-    <h1 class="text-center my-4">Item Dashboard</h1>
-
     <div class="row">
         <!-- Filters Sidebar (Desktop View) -->
         <div class="col-md-2 d-none d-md-block">
@@ -99,24 +97,37 @@
 
             <!-- Items -->
             <div class="row">
+                <h1 class="my-4">Item Dashboard</h1>
                 {% for item in items %}
-                <div class="col-md-3 mb-4">
-                    <div class="card h-100">
-                        <a href="{% url 'item_detail' item.name %}">
-                            {% with item.images.first as first_image %}
-                                {% if first_image %}
-                                    <img src="{{ first_image.image.url }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: cover;">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100 p-2 item-card">
+                        <a href="{% url 'item_detail' item.name %}" 
+                           style="display: flex; align-items: center; justify-content: center;">
+                            {% with item.images.all|slice:":2" as images %}
+                                {% if images|length > 0 %}
+                                    <img src="{{ images.0.image.url }}" 
+                                         class="card-img-top item-image" 
+                                         alt="{{ item.name }}" 
+                                         style="height: 200px; width: 200px; object-fit: cover;"
+                                         data-first="{{ images.0.image.url }}"
+                                         {% if images|length > 1 %}
+                                             data-second="{{ images.1.image.url }}"
+                                         {% endif %}>
                                 {% else %}
-                                    <img src="/static/default-image.jpg" class="card-img-top" alt="No image available" style="height: 200px; object-fit: cover;">
+                                    <img src="/static/default-image.jpg" 
+                                         class="card-img-top item-image" 
+                                         alt="No image available" 
+                                         style="height: 200px; width: 200px; object-fit: cover;">
                                 {% endif %}
                             {% endwith %}
                         </a>
-                        <div class="card-body text-center">
-                            <h5 class="card-title">{{ item.name }}</h5>
-                            <p class="card-text"> ${{ item.price|floatformat:2 }}</p>
-                            <p class="card-text"> <strong>Creator:</strong> <a href="{% url 'artist_detail' item.artist.name %}">{{ item.artist.name }}</a></p>
-                            <a href="{% url 'item_detail' item.name %}" class="btn btn-primary w-45 m-1 btn-sm ">View Item Details</a>
-                            <a href="{% url 'add_to_cart' item.id %}" class="btn btn-success w-45 m-1 btn-sm">🛒 Add to Cart</a>
+                        <div class="card-body">
+                            <p class="card-text m-0"><strong>Creator:</strong> <a href="{% url 'artist_detail' item.artist.name %}">{{ item.artist.name }}</a></p>
+                            <h5 class="card-title mb-2">{{ item.name }}</h5>
+                            <p><strong></strong> {{ item.description|truncatechars:110 }}</p>
+                           
+                            <p class="card-text m-0"><strong>${{ item.price|floatformat:2 }}</strong></p>
+                            <a href="{% url 'add_to_cart' item.id %}" class="btn btn-primary mt-2">Add to Cart</a>
                         </div>
                     </div>
                 </div>
@@ -146,4 +157,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
