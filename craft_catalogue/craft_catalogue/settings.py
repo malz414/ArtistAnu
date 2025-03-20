@@ -14,7 +14,7 @@ SECRET_KEY = 'your-secret-key'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ArtistAnu.pythonanywhere.com', '127.0.0.1']
+ALLOWED_HOSTS = ['ArtistAnu.com','ArtistAnu.pythonanywhere.com', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
