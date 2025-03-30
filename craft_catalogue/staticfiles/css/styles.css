@@ -11,10 +11,8 @@ html, body {
     background-color: #F8F8F8;
 }
 
-
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Yanone Kaffeesatz', sans-serif;
-    
 }
 
 .navbar-brand, .nav-link {
@@ -24,6 +22,7 @@ h1, h2, h3, h4, h5, h6 {
 .btn {
     font-family: 'Yanone Kaffeesatz', sans-serif;
 }
+
 /* Main content should fill available space */
 .container {
     flex: 1;
@@ -87,7 +86,6 @@ ul {
 
 li {
     padding: 5px;
-    /* border-bottom: 1px solid #ddd; */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -118,7 +116,6 @@ button:hover {
 
 /* Footer styling */
 footer {
-    
     background-color: #ffffff;
     text-align: center;
     padding: 15px;
@@ -161,11 +158,13 @@ footer a.nav-link {
     margin: 0;
     padding: 0;
 }
+
 .category-item-image {
-    max-width: 100%;   /* Ensure it doesn't exceed its container width */
-    height: auto;      /* Maintain aspect ratio */
-    max-height: 300px; /* Limit height to 300px (adjust as needed) */
+    max-width: 100%;
+    height: auto;
+    max-height: 300px;
 }
+
 .dropdown-menu {
     padding: 0 !important;
     margin: 0 !important;
@@ -173,21 +172,16 @@ footer a.nav-link {
 
 .dropdown-menu li {
     padding: 0;
-    border:dashed 2px #41403E;
- 
-
-    
+    border: dashed 2px #41403E;
 }
 
 .dropdown-menu .dropdown-item:hover {
     background-color: #218838 !important;
 }
-.card
-{
-    border:solid 1px #41403E;
-    
-    border-radius: 0;
 
+.card {
+
+    border-radius: 0;   
 }
 
 .card:hover {
@@ -195,92 +189,51 @@ footer a.nav-link {
 }
 
 .card-title {
-    font-size: 28px; /* Adjust the font size as needed */
+    font-size: 28px;
 }
 
-    .search-suggestions-dropdown {
-        position: absolute;
-        background: white;
-        border: 1px solid #ccc;
-        width: 100%;
-        max-height: 200px;
-        overflow-y: auto;
-        z-index: 1000;
-    }
+.search-suggestions-dropdown {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
 
-    .suggestion-item {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        border-bottom: 1px solid #eee;
-        
-    }
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
 
-    .suggestion-item:hover {
-        background: #f5f5f5;
-    }
+.suggestion-item:hover {
+    background: #f5f5f5;
+}
 
-    .suggestion-image {
-        width: 50px;
-        height: 50px;
-        margin-right: 10px;
-        object-fit: cover;
-    }
+.suggestion-image {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    object-fit: cover;
+}
 
-    .suggestion-name {
-        
-       
-        flex-grow: 1;
-    }
+.suggestion-name {
+    flex-grow: 1;
+}
 
-    .suggestion-price {
-    
-        color: #888;
-    }
-    .search-suggestions-dropdown .suggestion-item .suggestion-name {
-        color: #000;
-        text-decoration: none;
-    }
-    
+.suggestion-price {
+    color: #888;
+}
+
+.search-suggestions-dropdown .suggestion-item .suggestion-name {
+    color: #000;
+    text-decoration: none;
+}
 
 .search-suggestions-dropdown a {
     text-decoration: none !important;
     color: inherit !important;
-}
-/* Container for the images: fixes height and makes it responsive */
-.item-card .img-container {
-    display: block;
-    position: relative;
-    width: 100%;
-    height: 200px; /* Fixed height for the image area */
-    overflow: hidden;
-}
-
-/* Base styles for all images inside the container */
-.item-card .img-container img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: opacity 0.5s ease-in-out;
-}
-
-/* The default (first) image is fully visible */
-.item-card .item-image {
-    opacity: 1;
-}
-
-/* The hover image is hidden by default */
-.item-card .hover-image {
-    opacity: 0;
-}
-
-/* On hover, fade out the first image and fade in the second */
-.item-card:hover .hover-image {
-    opacity: 1;
-}
-.item-card:hover .item-image {
-    opacity: 0;
 }
