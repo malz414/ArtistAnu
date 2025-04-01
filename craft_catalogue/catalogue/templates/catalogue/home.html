@@ -30,7 +30,7 @@
           <h3>{{ featured_item.name }}</h3>
           <p><strong>Description:</strong> {{ featured_item.description }}</p>
            <p><strong>Artist:</strong> <a href="{% url 'artist_detail' featured_item.artist.name %}">{{ featured_item.artist.name }}</a></p>
-
+          
           <p><strong>Price:</strong> {{ featured_item.price }} USD</p>
           <a href="{% url 'add_to_cart' featured_item.id %}" class="btn btn-success btn-lg">Add to Cart</a>
         </div>
@@ -44,29 +44,51 @@
          <p class="welcome-text">At ArtistAnu, we’re more than a marketplace – we’re a bridge that connects artists, collectors, and art lovers. Discover one-of-a-kind pieces that tell the story of Antigua, from stunning paintings and intricate pottery to handcrafted jewelry and textiles.</p>
 
   </div>
+  <!-- Recent Items Carousel -->
+ 
   <div class="container-fluid p-3" style="background-color: #fffae5;">
+    <div class="container">
     <h2 class="featured-heading text-center p-3">Recent Additions</h2>
+    <div class="position-relative">
+      <button class="carousel-btn left d-none d-md-block" onclick="CarouselScrollLeft('recent-items')">‹</button>
 
-    <div class="masonry">
-        {% with recent_items|first as item %}
-            {% for _ in "12345678" %}  <!-- Repeat first item 8 times for visualization -->
-                <a href="{% url 'item_detail' item.name %}" class="masonry-item">
-                    {% with item.images.all|slice:":1" as images %}
-                        {% if images|length > 0 %}
-                            <img src="{{ images.0.image.url }}" alt="{{ item.name }}">
-                        {% else %}
-                            <img src="/static/default-image.jpg" alt="No image available">
-                        {% endif %}
-                    {% endwith %}
-                </a>
-            {% endfor %}
-        {% endwith %}
+      <div class="row flex-nowrap overflow-auto p-3" id="carousel-recent-items" style="scroll-behavior: smooth;">
+        {% for item in recent_items %}
+          <div class="col-lg-2 col-md-4 col-sm-7 col-7">
+            <div class="card h-100 p-0 item-card">
+              <a href="{% url 'item_detail' item.name %}" style="display: block; text-align: center;">
+                {% with item.images.all|slice:":2" as images %}
+                  {% if images|length > 0 %}
+                    <img src="{{ images.0.image.url }}" class="card-img-top item-image" alt="{{ item.name }}" style="height: 200px; width: 100%; object-fit: cover;">
+                  {% else %}
+                    <img src="/static/default-image.jpg" class="card-img-top item-image" alt="No image available" style="height: 200px; width: 100%; object-fit: cover;">
+                  {% endif %}
+                {% endwith %}
+              </a>
+          
+              <div class="card-body" style="text-align: center;">
+                <p class="card-text m-0">
+                  <strong>Creator:</strong> 
+                  <a href="{% url 'artist_detail' item.artist.name %}" class="position-relative" style="z-index: 3;">{{ item.artist.name }}</a>
+              </p>
+                <p class="card-text m-0"><strong>{{ item.name }}</strong></p>
+                <p class="card-text m-0">Price: ${{ item.price|floatformat:2 }}</p>
+                <a href="{% url 'item_detail' item.name %}" class="btn btn-primary btn-sm m-0">View item</a>
+                <a href="{% url 'add_to_cart' item.id %}" class="btn btn-success btn-sm m-0">Add to cart</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <button class="carousel-btn right d-none d-md-block" onclick="CarouselScrollRight('recent-items')">›</button>
     </div>
+    
 
     <!-- See All Button -->
     <div class="text-end mt-4">
         <a href="{% url 'dashboard' %}" class="btn btn-outline-dark btn-sm">See All →</a>
     </div>
+  </div>
 </div>
 
 
@@ -176,11 +198,11 @@
     }
 
     .left {
-      left: -7px;
+      left: -15px;
     }
 
     .right {
-      right: -7px;
+      right: -15px;
     }
 
     /* Hide scrollbar */
@@ -217,7 +239,7 @@
       }
 
       .category-image {
-        height: 100px;
+        height: 100%;
       }
     }
     .masonry {
@@ -254,37 +276,63 @@
 
 .parallax {
   background-image: url("/media/craft_items/Fr\(2\).png");
-  
-  background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
-  transition: background-size 0.1s ease-out; /* Smooth transition for resizing */
+  min-height: 70vh;
 }
 
-.welcome-text {
-  font-size: 2rem;
-  color: white;
-  position: absolute;
-  text-align: center;
-  width: 60%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1; /* Ensures the text stays above the background */
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .parallax {
+    background-attachment: scroll !important; /* Disable fixed background on mobile */
+    background-size: cover; /* Show full image without cropping */
+    background-color: #080710; /* Fallback color */
+    min-height: 20vh !important;
+  }
+  
+  .welcome-text {
+    width: 90%;
+    font-size: 1.2rem;
+    position: relative;
+    transform: none;
+    left: auto;
+    top: auto;
+    padding: 2rem 0;
+    margin: 0 auto;
+  }
+}
+
+/* Desktop-only effects */
+@media (min-width: 769px) {
+  .parallax {
+    background-attachment: fixed;
+    transition: background-size 0.1s ease-out;
+  }
+  
+  .welcome-text {
+    font-size: 2rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 
 
 
   </style>
 <script>
-window.addEventListener('scroll', function() {
-  var parallax = document.querySelector('.parallax');
-  var offset = window.pageYOffset; // Get the scroll position
-  var scale = 1 + (offset * 0.001); // Scale factor based on scroll position
-  parallax.style.backgroundSize = (100 + offset * 0.0052) + "%"; // Adjust the background size smoothly
-  parallax.style.backgroundPosition = 'center ' + (offset * .1) + 'px'; // Parallax effect for background position
-});
+// Only run parallax effect on desktop
+if (window.matchMedia("(min-width: 769px)").matches) {
+  window.addEventListener('scroll', function() {
+    var parallax = document.querySelector('.parallax');
+    var offset = window.pageYOffset;
+    var scale = 1 + (offset * 0.001);
+    parallax.style.backgroundSize = (100 + offset * 0.0052) + "%";
+    parallax.style.backgroundPosition = 'center ' + (offset * .1) + 'px';
+  });
+}
 </script>
 {% endblock %}

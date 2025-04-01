@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container-fluid">
+<div class="container mt-0">
     <div class="row">
         <!-- Filters Sidebar (Desktop View) -->
         <div class="col-md-2 d-none d-md-block">
@@ -97,37 +97,55 @@
 
             <!-- Items -->
             <div class="row">
-                <h1 class="">Item Dashboard</h1>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="text-muted">
+                        Showing {{ items|length }} product{{ total_items|pluralize:"s" }}
+                        {% if request.GET and items|length != total_items %}
+                            (filtered)
+                        {% endif %}
+                    </div>
+                </div>
+        
+    
+                
                 {% for item in items %}
-                <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100 p-2 item-card">
-                        <a href="{% url 'item_detail' item.name %}"
-                           style="display: flex; align-items: center; justify-content: center;">
-                            {% with item.images.all|slice:":2" as images %}
-                                {% if images|length > 0 %}
-                                    <img src="{{ images.0.image.url }}"
-                                         class="card-img-top item-image"
-                                         alt="{{ item.name }}"
-                                         style="height: 200px; width: 100%; object-fit: cover;"
-                                         data-first="{{ images.0.image.url }}"
-                                         {% if images|length > 1 %}
-                                             data-second="{{ images.1.image.url }}"
-                                         {% endif %}>
-                                {% else %}
-                                    <img src="/static/default-image.jpg"
-                                         class="card-img-top item-image"
-                                         alt="No image available"
-                                         style="height: 200px; width: 100%; object-fit: cover;">
-                                {% endif %}
-                            {% endwith %}
-                        </a>
-                        <div class="card-body">
-                            <p class="card-text m-0"><strong>Creator:</strong> <a href="{% url 'artist_detail' item.artist.name %}">{{ item.artist.name }}</a></p>
-                            <h5 class="card-title mb-2">{{ item.name }}</h5>
-                            <p><strong></strong> {{ item.description|truncatechars:110 }}</p>
-                            <p class="card-text m-0"><strong>${{ item.price|floatformat:2 }}</strong></p>
-                            <a href="{% url 'add_to_cart' item.id %}" class="btn btn-primary mt-2">Add to Cart</a>
+                <div class="col-6 col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100 p-0 item-card position-relative">
+                        <!-- Main card link (covers entire card) -->
+                        <a href="{% url 'item_detail' item.name %}" class="stretched-link" style="z-index: 1;"></a>
+                        
+                        <!-- Image section -->
+                        {% with item.images.all|slice:":2" as images %}
+                            {% if images|length > 0 %}
+                                <img src="{{ images.0.image.url }}"
+                                     class="card-img-top item-image"
+                                     alt="{{ item.name }}"
+                                     style="height: 200px; width: 100%; object-fit: cover;"
+                                     data-first="{{ images.0.image.url }}"
+                                     {% if images|length > 1 %}
+                                         data-second="{{ images.1.image.url }}"
+                                     {% endif %}>
+                            {% else %}
+                                <img src="/static/default-image.jpg"
+                                     class="card-img-top item-image"
+                                     alt="No image available"
+                                     style="height: 200px; width: 100%; object-fit: cover;">
+                            {% endif %}
+                        {% endwith %}
+                        
+                        <!-- Card body with clickable creator name -->
+                        <div class="card-body" style="text-align: center;">
+                            <p class="card-text m-0">
+                                <strong>Creator:</strong> 
+                                <a href="{% url 'artist_detail' item.artist.name %}" class="position-relative" style="z-index: 3;">{{ item.artist.name }}</a>
+                            </p>
+                            <p class="card-text m-0"><strong>{{ item.name }}</strong></p>
+                            <p class="card-text m-0">Price: ${{ item.price|floatformat:2 }}</p>
+                            <a href="{% url 'item_detail' item.name %}" class="btn btn-primary btn-sm m-0">View item</a>
+                            <a href="{% url 'add_to_cart' item.id %}" class="btn btn-success btn-sm m-0">Add to cart</a>
                         </div>
+                        
+                    
                     </div>
                 </div>
                 {% empty %}

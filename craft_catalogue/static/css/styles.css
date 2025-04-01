@@ -148,7 +148,10 @@ footer {
     height: auto !important;
     max-height: 400px !important;
 }
-
+.card-img, .card-img-top {
+    border-top-left-radius: var(0) !important;
+    border-top-right-radius: var(0) !important;
+}
 footer p {
     white-space: nowrap;
 }
@@ -189,7 +192,7 @@ footer a.nav-link {
 }
 
 .card-title {
-    font-size: 28px;
+    font-size: 12px;
 }
 
 .search-suggestions-dropdown {

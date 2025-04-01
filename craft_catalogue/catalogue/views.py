@@ -17,7 +17,8 @@ from django.utils import timezone
 from django.http import JsonResponse
 from .forms import CraftItemForm, CraftItemImageForm, ArtistProfileForm
 from django.forms import formset_factory
-
+from decimal import Decimal
+import json
 
 @login_required
 def add_craft_item(request):
@@ -238,6 +239,7 @@ def dashboard(request):
         'selected_category': category_name, 
         "items": page_items,  # Paginated items
         "search_query": search_query,  # Pass search query to template
+        "total_items": items.count(), 
     }
     return render(request, "catalogue/dashboard.html", context)
 
@@ -416,6 +418,44 @@ def remove_expired_items(request):
 
     return JsonResponse({"message": "Expired items removed"})
 
+def update_cart_item_quantity(request, cart_item_id, action):
+    try:
+        cart_item = CartItem.objects.get(id=cart_item_id, cart__user=request.user)
+        if action == 'increase':
+            if cart_item.quantity < cart_item.item.quantity:
+                cart_item.quantity += 1
+                cart_item.save()
+            else:
+                return JsonResponse({'success': False, 'message': 'Maximum quantity reached'})
+        elif action == 'decrease':
+            if cart_item.quantity > 1:
+                cart_item.quantity -= 1
+                cart_item.save()
+            else:
+                return JsonResponse({'success': False, 'message': 'Minimum quantity reached'})
+        elif action == 'set':
+            # Expect JSON with the new quantity
+            try:
+                data = json.loads(request.body)
+                new_quantity = int(data.get('quantity', cart_item.quantity))
+            except (ValueError, TypeError):
+                return JsonResponse({'success': False, 'message': 'Invalid quantity'})
+            
+            if new_quantity < 1:
+                return JsonResponse({'success': False, 'message': 'Invalid quantity'})
+            
+            max_qty = cart_item.item.quantity
+            if new_quantity > max_qty:
+                return JsonResponse({'success': False, 'message': 'Maximum quantity reached'})
+            
+            cart_item.quantity = new_quantity
+            cart_item.save()
+        else:
+            return JsonResponse({'success': False, 'message': 'Invalid action'})
+    
+        return JsonResponse({'success': True})
+    except CartItem.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Item not found'}, status=404)
 
 def cart_detail(request):
     if not request.user.is_authenticated:
@@ -423,7 +463,28 @@ def cart_detail(request):
     
     # Proceed with rendering the cart details for logged-in users
     cart = request.user.cart_set.last()  # Assuming one cart per user
-    return render(request, 'cart/cart_detail.html', {'cart': cart})
+    
+    # Check if the cart exists
+    if cart:
+        # Use the method total_price() to get the total price
+        total_price = cart.total_price()  # Call the method with parentheses
+        
+        # Calculate fees and final total
+        fees = total_price * Decimal('0.03')
+        shipping = Decimal('5.00')  # Fixed shipping cost
+        final_total = total_price + fees + shipping
+        
+        # Pass all the values to the template
+        context = {
+            'cart': cart,
+            'total_price': total_price,
+            'fees': fees,
+            'final_total': final_total,
+        }
+    else:
+        context = {'cart': None}
+    
+    return render(request, 'cart/cart_detail.html', context)
 
 
 def logout_view(request):

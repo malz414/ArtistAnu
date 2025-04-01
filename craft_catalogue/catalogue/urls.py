@@ -18,7 +18,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import logout_view, all_categories, search_suggestions, search_items
+from .views import update_cart_item_quantity, logout_view, all_categories, search_suggestions, search_items
 from . import views
 
 urlpatterns = [
@@ -27,6 +27,10 @@ urlpatterns = [
     path('search-suggestions/', search_suggestions, name='search_suggestions'),
 
     path('cart/remove-expired/', views.remove_expired_items, name='remove_expired_items'),
+    path('cart/update-quantity/<int:cart_item_id>/<str:action>/', update_cart_item_quantity, name='update_cart_item_quantity'),
+    
+    path('cart/update-quantity/<int:cart_item_id>/set/', update_cart_item_quantity, name='set_cart_item_quantity'),
+  
     path('category/<str:category_name>/', views.category_items, name='category_items'),
     path('catalogue/', views.catalogue, name='catalogue'),    
     path('add/<int:item_id>/', views.add_to_cart, name='add_to_cart'),   # Use item_name instead of item_id
