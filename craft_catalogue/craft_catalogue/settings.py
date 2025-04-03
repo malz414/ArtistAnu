@@ -114,5 +114,6 @@ AUTH_USER_MODEL = 'catalogue.CustomUser'
 AUTHENTICATION_BACKENDS = [
     'catalogue.backends.EmailOrUsernameAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
+    'catalogue.backends.CaseInsensitiveModelBackend',
 ]
 

@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <div class="container-fluid p-0 bg-dark" style="min-height: calc(100vh - 120px); background-image: url(../media/extra/hibiscus.png);">
     <div class="container p-3">
@@ -17,18 +16,23 @@
                     <div class="mb-2">
                         <label class="form1-label" for="{{ form.password.id_for_label }}">Password</label>
                         {{ form.password }}
-                     
                     </div>
-                    <small class="form-text" style="color: #c1c1c1; ;">
+
+                    <!-- Display form errors -->
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                <p class="mb-1 text-dark">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <small class="form-text" style="color: #c1c1c1;">
                         <a href="{% url 'password_reset' %}">Forgot password?</a>
                     </small>
                     <button type="submit" class="cart-button1 mt-3">Log In</button>
                     
-                    <div class="social mt-3">
-                        <div class="go"><i class="fab fa-google"></i> Google</div>
-                        <div class="fb"><i class="fab fa-facebook"></i> Facebook</div>
-                    </div>
-
+             
                     <p class="mt-4 text-center" style="color: #c1c1c1;">
                         New to our site? <a href="{% url 'signup' %}" style="color: #ffdd57;">Create an account</a>
                     </p>
@@ -37,7 +41,6 @@
         </div>
     </div>
 </div>
-
 
 <style>
     body {

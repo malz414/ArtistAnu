@@ -1,338 +1,462 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 {% block content %}
 
-
-  <!-- Featured Item Section -->
-  {% if featured_item %}
-    <div class="featured-item container mt-4">
-    
-      <div class="row">
-        <!-- Image Section -->
-        <div class="col-md-6 col-sm-12">
-          {% if featured_item.images.all %}
-            <!-- Main Image -->
-            <img id="featuredMainImage" src="{{ featured_item.images.first.image.url }}" alt="{{ featured_item.name }}" class="img-fluid main-img">
-            <!-- Thumbnails Container -->
-            <div class="image-thumbnails d-flex flex-wrap mt-2 text-center">
-              {% for image in featured_item.images.all %}
-                <img src="{{ image.image.url }}" alt="{{ featured_item.name }}" class="img-thumbnail thumb-img" onclick="changeFeaturedMainImage('{{ image.image.url }}')">
-              {% endfor %}
+<div class="hero-section" >
+  <div class="container h-100">
+    <div class="row h-100 align-items-end">
+      <div class="col-12 text-center mb-5">
+        <form method="GET" action="{% url 'dashboard' %}" class="filter-form bg-white p-4 rounded shadow " style="max-width: 800px; margin: 0 auto; align-self: bas;">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <select name="category" class="form-select">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category.name }}">{{ category.name }}</option>
+                {% endfor %}
+              </select>
             </div>
-          {% else %}
-            <p class="text-muted">No image available</p>
-          {% endif %}
-        </div>
-
-        <!-- Details Section -->
-        <div class="col-md-6 col-sm-12">
-          <h2 class="featured-heading">Featured Item</h2>
-          <h3>{{ featured_item.name }}</h3>
-          <p><strong>Description:</strong> {{ featured_item.description }}</p>
-           <p><strong>Artist:</strong> <a href="{% url 'artist_detail' featured_item.artist.name %}">{{ featured_item.artist.name }}</a></p>
-          
-          <p><strong>Price:</strong> {{ featured_item.price }} USD</p>
-          <a href="{% url 'add_to_cart' featured_item.id %}" class="btn btn-success btn-lg">Add to Cart</a>
-        </div>
-      </div>
-    </div>
-  {% else %}
-    <p>No featured item available.</p>
-  {% endif %}
-  <div class="container-fluid parallax" style="min-height: 70vh; color: white; ">
-    <!-- Welcome Section -->
-         <p class="welcome-text">At ArtistAnu, we’re more than a marketplace – we’re a bridge that connects artists, collectors, and art lovers. Discover one-of-a-kind pieces that tell the story of Antigua, from stunning paintings and intricate pottery to handcrafted jewelry and textiles.</p>
-
-  </div>
-  <!-- Recent Items Carousel -->
- 
-  <div class="container-fluid p-3" style="background-color: #fffae5;">
-    <div class="container">
-    <h2 class="featured-heading text-center p-3">Recent Additions</h2>
-    <div class="position-relative">
-      <button class="carousel-btn left d-none d-md-block" onclick="CarouselScrollLeft('recent-items')">‹</button>
-
-      <div class="row flex-nowrap overflow-auto p-3" id="carousel-recent-items" style="scroll-behavior: smooth;">
-        {% for item in recent_items %}
-          <div class="col-lg-2 col-md-4 col-sm-7 col-7">
-            <div class="card h-100 p-0 item-card">
-              <a href="{% url 'item_detail' item.name %}" style="display: block; text-align: center;">
-                {% with item.images.all|slice:":2" as images %}
-                  {% if images|length > 0 %}
-                    <img src="{{ images.0.image.url }}" class="card-img-top item-image" alt="{{ item.name }}" style="height: 200px; width: 100%; object-fit: cover;">
-                  {% else %}
-                    <img src="/static/default-image.jpg" class="card-img-top item-image" alt="No image available" style="height: 200px; width: 100%; object-fit: cover;">
-                  {% endif %}
-                {% endwith %}
-              </a>
-          
-              <div class="card-body" style="text-align: center;">
-                <p class="card-text m-0">
-                  <strong>Creator:</strong> 
-                  <a href="{% url 'artist_detail' item.artist.name %}" class="position-relative" style="z-index: 3;">{{ item.artist.name }}</a>
-              </p>
-                <p class="card-text m-0"><strong>{{ item.name }}</strong></p>
-                <p class="card-text m-0">Price: ${{ item.price|floatformat:2 }}</p>
-                <a href="{% url 'item_detail' item.name %}" class="btn btn-primary btn-sm m-0">View item</a>
-                <a href="{% url 'add_to_cart' item.id %}" class="btn btn-success btn-sm m-0">Add to cart</a>
-              </div>
+            <div class="col-md-4">
+              <input type="number" name="price_max" class="form-control" placeholder="Max Price" min="0">
+            </div>
+            <div class="col-md-2">
+              <button type="submit" class="btn btn-dark w-100">Search</button>
             </div>
           </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% if featured_item %}
+<div class="featured-item container mt-4 p-4">
+
+  <div class="row">
+    <div class="col-md-6 col-sm-12">
+      {% if featured_item.images.all %}
+      <img id="featuredMainImage" src="{{ featured_item.images.first.image.url }}" alt="{{ featured_item.name }}" class="img-fluid main-img">
+      <div class="image-thumbnails d-flex flex-wrap mt-2 text-center">
+        {% for image in featured_item.images.all %}
+        <img src="{{ image.image.url }}" alt="{{ featured_item.name }}" class="img-thumbnail thumb-img" onclick="changeFeaturedMainImage('{{ image.image.url }}')">
         {% endfor %}
       </div>
-      <button class="carousel-btn right d-none d-md-block" onclick="CarouselScrollRight('recent-items')">›</button>
+      {% else %}
+      <p class="text-muted">No image available</p>
+      {% endif %}
     </div>
-    
 
-    <!-- See All Button -->
+    <div class="col-md-6 col-sm-12">
+      <h2 class="featured-heading">Featured Item</h2>
+      <h3>{{ featured_item.name }}</h3>
+      <p><strong>Description:</strong> {{ featured_item.description }}</p>
+      <p><strong>Artist:</strong> <a href="{% url 'artist_detail' featured_item.artist.name %}">{{ featured_item.artist.name }}</a></p>
+
+      <p><strong>Price:</strong> {{ featured_item.price }} USD</p>
+      <a href="{% url 'add_to_cart' featured_item.id %}" class="btn btn-success btn-lg">Add to Cart</a>
+    </div>
+  </div>
+</div>
+{% else %}
+<p>No featured item available.</p>
+{% endif %}
+<div class="container-fluid parallax" style="min-height: 70vh; color: white; ">
+  <p class="welcome-text">At ArtistAnu, we’re more than a marketplace – we’re a bridge that connects artists, collectors, and art lovers. Discover one-of-a-kind pieces that tell the story of Antigua, from stunning paintings and intricate pottery to handcrafted jewelry and textiles.</p>
+
+</div>
+<div class="container-fluid p-3" style="background-color: #fffae5;">
+  <div class="container">
+    <h2 class="featured-heading text-center p-3">Recent Additions</h2>
+    <div class="row">
+      {% for item in recent_items %}
+      <div class="col-6 col-sm-6 col-md-4 col-lg-3 p-0">
+        <div class="item-card d-flex flex-column align-items-center text-center">
+          <a href="{% url 'item_detail' item.name %}" class="text-decoration-none">
+            {% with item.images.all|slice:":2" as images %}
+            {% if images|length > 0 %}
+            <img src="{{ images.0.image.url }}" class="item-image" alt="{{ item.name }}" style="max-width: 200px; max-height: 300px;">
+            {% else %}
+            <img src="/static/default-image.jpg" class="item-image" alt="No image available">
+            {% endif %}
+            {% endwith %}
+          </a>
+
+          <a href="{% url 'add_to_cart' item.id %}" class="add-to-cart-btn btn btn-success btn-sm">
+            Add to Cart
+          </a>
+
+          <div class="item-info mb p-0">
+            <p class="mb-0 mt-4"><strong>{{ item.name }}</strong></p>
+            <p class="mb-0 mt-0 text-muted">{{ item.category }}</p>
+            <p class="card-text m-0">
+              <strong>Creator:</strong>
+              <a href="{% url 'artist_detail' item.artist.name %}" class="position-relative" style="z-index: 3;">
+                {{ item.artist.name }}
+              </a>
+            </p>
+            <p class="price m-0">${{ item.price|floatformat:2 }}</p>
+          </div>
+        </div>
+      </div>
+
+      {% empty %}
+      <p class="text-muted text-center">No recent items found.</p>
+      {% endfor %}
+    </div>
+
     <div class="text-end mt-4">
-        <a href="{% url 'dashboard' %}" class="btn btn-outline-dark btn-sm">See All →</a>
+      <a href="{% url 'dashboard' %}" class="btn btn-outline-dark btn-sm">See All →</a>
     </div>
   </div>
 </div>
 
+<div class="container-fluid p-0" style="background-color: #ffffff;">
+  <h2 class="featured-heading text-center p-3">Categories</h2>
+  <div class="categories d-flex flex-wrap justify-content-between">
+    {% for category in categories %}
+    {% with forloop.counter0|divisibleby:3 as alt_color %}
 
-      
- 
-  <!-- Category Section -->
+    <div class="category-card col-8 col-sm-4 col-md-4 col-lg-3 p-3
+       ">
 
-  <div class="container-fluid" style="background-color: #ffffff;">
-    <h2 class="featured-heading text-center p-3">Categories</h2>
- 
-    <div class="categories d-flex flex-wrap justify-content-between">
-      {% for category in categories %}
-        <div class="category-card mb-4 col-8 col-sm-4 col-md-4 col-lg-3">
-          <a href="{% url 'dashboard' %}?category={{ category.name }}">
-            <img src="{% static 'images/categories/' %}{{ forloop.counter|add:1 }}.png" alt="{{ category.name }}" class="img-fluid category-image">
-          </a>
-        </div>
-      {% endfor %}
+      <a href="{% url 'dashboard' %}?category={{ category.name }}">
+        <img src="{% static 'images/categories/' %}{{ forloop.counter|add:1 }}.png" alt="{{ category.name }}" class="img-fluid category-image mx-auto d-block">
+      </a>
     </div>
+
+    {% endwith %}
+    {% endfor %}
   </div>
 
-  <script>
-    function changeFeaturedMainImage(imageUrl) {
-      document.getElementById('featuredMainImage').src = imageUrl;
-    }
-  </script>
-
-  <style>
+</div>
 
 
-
-    .featured-heading {
-      font-size: 2rem;
-      margin-bottom: 20px;
-    }
-
-    .main-img {
-      width: 100%;
-      height: 400px;
-      object-fit: contain;
- 
-    }
-
-    .image-thumbnails {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin-top: 10px;
-      justify-content: center; 
-      align-items: center;  
-    }
-
-    .thumb-img {
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .thumb-img:hover {
-      transform: scale(1.1);
-    }
-
-    .featured-item {
-      margin-bottom: 40px;
-    }
-
-    /* Category Section Styling */
-    .categories {
-      display: flex;
-      flex-wrap: wrap;
-      
-      justify-content: space-between;
-    }
-
-    .category-card {
-      overflow: hidden;
-    }
-
-    .category-image {
-      width: 80%;
-      height: auto;
-      object-fit: contain;
-      transition: transform 0.2s ease;
-    }
-
-    .category-image:hover {
-      transform: scale(1.05);
-    }
-
-    .carousel-container {
-      display: flex;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-    }
-
-    .carousel-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0, 0, 0, 0.5);
-      border: none;
-      color: white;
-      padding: 10px;
-      cursor: pointer;
-    }
-
-    .left {
-      left: -15px;
-    }
-
-    .right {
-      right: -15px;
-    }
-
-    /* Hide scrollbar */
-    .row.flex-nowrap.overflow-auto {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
-    .row.flex-nowrap.overflow-auto::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 767.98px) {
-      .welcome-text {
-        font-size: 1.2rem;
-      }
-
-      .featured-heading {
-        font-size: 1.5rem;
-      }
-
-      .col-6 {
-        flex: 0 0 50%;
-        max-width: 50%;
-      }
-
-      .card-img-top {
-        height: 150px !important;
-      }
-
-      .category-card {
-        width: 48%;
-      }
-
-      .category-image {
-        height: 100%;
-      }
-    }
-    .masonry {
-    column-count: 4; /* Creates a masonry effect with 3 uneven columns */
-    column-gap: 60px; /* Adds space between columns */
-}
-
-.masonry-item {
-    display: block;
-    margin-bottom: 60px; /* Space between rows */
-    break-inside: avoid; /* Prevents images from breaking oddly */
-}
-
-.masonry-item img {
-    width: 100%; /* Makes images fill their column width */
-    height: auto; /* Keeps original aspect ratio */
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out;
-}
-
-.masonry-item img:hover {
-    transform: scale(1.05);
-}
-
-/* Responsive Adjustments */
-@media (max-width: 992px) {
-    .masonry { column-count: 2; } /* 2 columns on medium screens */
-}
-
-@media (max-width: 600px) {
-    .masonry { column-count: 1; } /* 1 column on small screens */
-}
-
-.parallax {
-  background-image: url("/media/craft_items/Fr\(2\).png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  position: relative;
-  min-height: 70vh;
-}
-
-/* Mobile-specific styles */
-@media (max-width: 768px) {
-  .parallax {
-    background-attachment: scroll !important; /* Disable fixed background on mobile */
-    background-size: cover; /* Show full image without cropping */
-    background-color: #080710; /* Fallback color */
-    min-height: 20vh !important;
+<script>
+  function changeFeaturedMainImage(imageUrl) {
+    document.getElementById('featuredMainImage').src = imageUrl;
   }
-  
-  .welcome-text {
-    width: 90%;
-    font-size: 1.2rem;
-    position: relative;
-    transform: none;
-    left: auto;
-    top: auto;
-    padding: 2rem 0;
-    margin: 0 auto;
-  }
-}
+</script>
 
-/* Desktop-only effects */
-@media (min-width: 769px) {
-  .parallax {
-    background-attachment: fixed;
-    transition: background-size 0.1s ease-out;
+<style>
+  .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+  .bg-lightyellow {
+    background-color: #fffacd;
+    /* Light Yellow */
   }
-  
-  .welcome-text {
+
+  .bg-lightblue {
+    background-color: #add8e6;
+    /* Light Blue */
+  }
+
+  .bg-lightgreen {
+    background-color: #90ee90;
+    /* Light Green */
+  }
+
+  .bg-lightcoral {
+    background-color: lightcoral;
+  }
+
+  .hero-section {
+    margin-top: 20px; 
+    margin-bottom: 3rem;
+    position: relative; 
+    min-height: 100vh; 
+    background: url('/media/extra/hero.jpg'); 
+     background-size: cover;
+background-repeat: no-repeat;
+background-position: 20%;
+  }
+
+  .filter-form {
+    position: absolute;
+    bottom: 20px;
+    /* Adjust this value to control distance from bottom */
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+
+  .featured-heading {
     font-size: 2rem;
+    margin-bottom: 20px;
+  }
+
+  .main-img {
+    width: 100%;
+    height: 400px;
+    object-fit: contain;
+
+  }
+
+  .item-card {
+    border: 1px none #e0c7b7;
+   
+    border-radius: 0;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .item-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .item-info {
+    text-align: center;
+    padding: 20px;
+  }
+
+  .price {
+    font-weight: bold;
+    color: #7b4c26;
+  }
+
+  .add-to-cart-btn {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    display: none;
+    width: 70%;
+    text-align: center;
   }
-}
 
+  .item-card:hover .add-to-cart-btn {
+    display: block;
+  }
 
+  .image-thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+  }
 
-  </style>
+  .thumb-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .thumb-img:hover {
+    transform: scale(1.1);
+  }
+
+  .featured-item {
+    margin-bottom: 40px;
+  }
+
+  /* Category Section Styling */
+  .categories {
+    display: flex;
+    flex-wrap: wrap;
+
+    justify-content: space-between;
+  }
+
+  .category-card {
+    overflow: hidden;
+  }
+
+  .category-image {
+    width: 80%;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+  }
+
+  .category-image:hover {
+    transform: scale(1.05);
+  }
+
+  .carousel-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+  }
+
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .left {
+    left: -15px;
+  }
+
+  .right {
+    right: -15px;
+  }
+
+  /* Hide scrollbar */
+  .row.flex-nowrap.overflow-auto {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .row.flex-nowrap.overflow-auto::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 767.98px) {
+    .welcome-text {
+      font-size: 1.2rem;
+    }
+
+    .featured-heading {
+      font-size: 1.5rem;
+    }
+
+    .col-6 {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+
+    .card-img-top {
+      height: 150px !important;
+    }
+
+    .category-card {
+      width: 48%;
+    }
+
+    .category-image {
+      height: 100%;
+    }
+  }
+
+  .masonry {
+    column-count: 4;
+    /* Creates a masonry effect with 3 uneven columns */
+    column-gap: 60px;
+    /* Adds space between columns */
+  }
+
+  .masonry-item {
+    display: block;
+    margin-bottom: 60px;
+    /* Space between rows */
+    break-inside: avoid;
+    /* Prevents images from breaking oddly */
+  }
+
+  .masonry-item img {
+    width: 100%;
+    /* Makes images fill their column width */
+    height: auto;
+    /* Keeps original aspect ratio */
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .masonry-item img:hover {
+    transform: scale(1.05);
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 992px) {
+    .masonry {
+      column-count: 2;
+    }
+
+    /* 2 columns on medium screens */
+  }
+
+  @media (max-width: 600px) {
+    .masonry {
+      column-count: 1;
+    }
+
+    /* 1 column on small screens */
+  }
+
+  .parallax {
+    background-image: url("/media/craft_items/Fr\(2\).png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    min-height: 70vh;
+  }
+
+  /* Mobile-specific styles */
+  @media (max-width: 768px) {
+    .parallax {
+      background-attachment: scroll !important;
+      /* Disable fixed background on mobile */
+      background-size: cover;
+      /* Show full image without cropping */
+      background-color: #080710;
+      /* Fallback color */
+      min-height: 20vh !important;
+    }
+
+    .welcome-text {
+      width: 90%;
+      font-size: 1.2rem;
+      position: relative;
+      transform: none;
+      left: auto;
+      top: auto;
+      padding: 2rem 0;
+      margin: 0 auto;
+    }
+  }
+
+  /* Desktop-only effects */
+  @media (min-width: 769px) {
+    .parallax {
+      background-attachment: fixed;
+      transition: background-size 0.1s ease-out;
+    }
+
+    .welcome-text {
+      font-size: 2rem;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+</style>
 <script>
-// Only run parallax effect on desktop
-if (window.matchMedia("(min-width: 769px)").matches) {
-  window.addEventListener('scroll', function() {
-    var parallax = document.querySelector('.parallax');
-    var offset = window.pageYOffset;
-    var scale = 1 + (offset * 0.001);
-    parallax.style.backgroundSize = (100 + offset * 0.0052) + "%";
-    parallax.style.backgroundPosition = 'center ' + (offset * .1) + 'px';
-  });
-}
+  // Only run parallax effect on desktop
+  if (window.matchMedia("(min-width: 769px)").matches) {
+    window.addEventListener('scroll', function () {
+      var parallax = document.querySelector('.parallax');
+      var offset = window.pageYOffset;
+      var scale = 1 + (offset * 0.001);
+      parallax.style.backgroundSize = (100 + offset * 0.0052) + "%";
+      parallax.style.backgroundPosition = 'center ' + (offset * .1) + 'px';
+    });
+  }
 </script>
 {% endblock %}

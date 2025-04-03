@@ -15,62 +15,64 @@
             <!-- Cart Items (Col-9) -->
             <div class="col-lg-9">
                 {% for cart_item in cart.cart_items.all %}
-                    <div class="card mb-3">
-                        <div class="row g-0">
-                            <!-- Image Column -->
-                            <div class="col-md-4 d-flex align-items-center justify-content-center">
-                                {% if cart_item.item.images.first %}
-                                    <img src="{{ cart_item.item.images.first.image.url }}" class="img-fluid rounded" alt="{{ cart_item.item.name }}" width="160">
-                                {% else %}
-                                    No image available
+                <div class="card mb-3 text-center">
+                    <div class="row g-0">
+                        <!-- Image Column -->
+                        <div class="col-md-4 d-flex align-items-center justify-content-center">
+                            {% if cart_item.item.images.first %}
+                            <img src="{{ cart_item.item.images.first.image.url }}" 
+                            class="cart-image" 
+                            alt="{{ cart_item.item.name }}">
+                            {% else %}
+                                No image available
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Item Info Column -->
+                        <div class="col-md-3 d-flex align-items-center justify-content-center">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">
+                                    <a href="{% url 'item_detail' cart_item.item.name %}" class="text-decoration-none">{{ cart_item.item.name }}</a>
+                                </h5>
+                                <p class="card-text mb-0">Price: {{ cart_item.item.price }} USD</p>
+                                {% if cart_item.item.is_unique %}
+                                    <p class="text-muted mt-1"><small>This is a one-of-a-kind item</small></p>
                                 {% endif %}
                             </div>
-                            
-                            <!-- Item Info Column -->
-                            <div class="col-md-3 d-flex align-items-center justify-content-center">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        <a href="{% url 'item_detail' cart_item.item.name %}">{{ cart_item.item.name }}</a>
-                                    </h5>
-                                    <p class="card-text">Price: {{ cart_item.item.price }} USD</p>
-                                    {% if cart_item.item.is_unique %}
-                                        <p class="text-muted"><small>This is a one-of-a-kind item</small></p>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            
-                            <!-- Quantity Column -->
-                            <div class="col-md-3 d-flex align-items-center">
-                                <div class="input-group" style="width: 120px;">
-                                    {% if not cart_item.item.is_unique %}
-                                        <button class="btn btn-outline-secondary decrease-quantity" 
-                                                type="button" 
-                                                data-cart-item-id="{{ cart_item.id }}"
-                                                {% if cart_item.quantity <= 1 %}disabled{% endif %}>
-                                            -
-                                        </button>
-                                        <input type="text" class="form-control text-center quantity-input" 
-                                               value="{{ cart_item.quantity }}"
-                                               data-cart-item-id="{{ cart_item.id }}">
-                                        <button class="btn btn-outline-secondary increase-quantity" 
-                                                type="button" 
-                                                data-cart-item-id="{{ cart_item.id }}"
-                                                {% if cart_item.quantity >= cart_item.item.quantity %}disabled{% endif %}>
-                                            +
-                                        </button>
-                                    {% else %}
-                                        <input type="text" class="form-control text-center" 
-                                               value="1" readonly>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            
-                            <!-- Total Price Column -->
-                            <div class="col-md-2 d-flex align-items-center">
-                                <h5>{{ cart_item.total_price }} USD</h5>
+                        </div>
+                        
+                        <!-- Quantity Column -->
+                        <div class="col-md-3 mb-2 d-flex align-items-center justify-content-center">
+                            <div class="input-group justify-content-center" style="width: 120px;">
+                                {% if not cart_item.item.is_unique %}
+                                    <button class="btn btn-outline-secondary decrease-quantity" 
+                                            type="button" 
+                                            data-cart-item-id="{{ cart_item.id }}"
+                                            {% if cart_item.quantity <= 1 %}disabled{% endif %}>
+                                        -
+                                    </button>
+                                    <input type="text" class="form-control text-center quantity-input" 
+                                           value="{{ cart_item.quantity }}"
+                                           data-cart-item-id="{{ cart_item.id }}">
+                                    <button class="btn btn-outline-secondary increase-quantity" 
+                                            type="button" 
+                                            data-cart-item-id="{{ cart_item.id }}"
+                                            {% if cart_item.quantity >= cart_item.item.quantity %}disabled{% endif %}>
+                                        +
+                                    </button>
+                                {% else %}
+                                    <input type="text" class="form-control text-center" 
+                                           value="1" readonly>
+                                {% endif %}
                             </div>
                         </div>
+                        
+                        <!-- Total Price Column -->
+                        <div class="col-md-2  d-flex align-items-center justify-content-center">
+                            <h5 class="mb-0">{{ cart_item.total_price }} USD</h5>
+                        </div>
                     </div>
+                </div>
                 {% endfor %}
             </div>
 
@@ -78,7 +80,7 @@
             <div class="col-lg-3">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">Order Summary</h4>
+                        <h4 class="card-title ">Order Summary</h4>
                         <hr>
                         <h5>Subtotal: <span class="float-end">{{ total_price|floatformat:2 }} USD</span></h5>
                         <h5>Processing Fee (3%): <span class="float-end">{{ fees|floatformat:2 }} USD</span></h5>
@@ -96,6 +98,18 @@
         <p>Your cart is empty.</p>
     {% endif %}
 </div>
+<style>
+    .cart-image {
+        width: 160px;
+        height: 160px;
+        object-fit: contain;
+        background: #f8f9fa;
+        border-radius: 0.25rem;
+    }
+    .card-title{
+        font-size: x-large;
+    }
+</style>
 
 <!-- JavaScript for Quantity Adjustment -->
 <script>

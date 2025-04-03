@@ -255,20 +255,23 @@ def clear_cart(request):
 
     return redirect('cart_detail')
 
-
-
 def custom_login_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('home')  # Ensure 'home' is a valid named URL pattern
+            return redirect('home')
+        else:
+            # Add error message for invalid credentials
+            messages.error(request, "Invalid username or password")
     else:
         form = CustomAuthenticationForm()
-
-    return render(request, 'login.html', {'form': form}) 
-
+    
+    return render(request, 'login.html', {
+        'form': form,
+        'errors': form.errors.get('__all__', [])  # Pass non-field errors explicitly
+    })
 
 def signup(request):
     if request.method == 'POST':
