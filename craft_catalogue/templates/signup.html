@@ -1,9 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container-fluid p-0 bg-dark" style="min-height: calc(100vh - 120px); background-image: url(../media/extra/flora1.png); background-size: auto;">
-    <div class="container p-3">
-        <div class="d-flex justify-content-center align-items-center text-center" style="min-height: 100vh;">
+    <div class="row g-0" style="min-height: 70vh;">
+        <!-- Left Side: Background Color with Image -->
+        <div class="col-md-6" style=" background-image: url(../media/extra/login.jpg); background-size: cover; ">
+            <!-- Background Image: Sign Up -->
+        </div>
+
+        <!-- Right Side: Form -->
+        <div class="col-md-6 p-5 d-flex justify-content-center align-items-center" style="background-color: #DD9268;">
             <div class="card1">
                 <h3>Sign Up</h3>
                 <form method="POST">
@@ -34,96 +39,104 @@
 
                     <button type="submit" class="cart-button1 mt-3">Sign Up</button>
 
-                    <p class="mt-4 text-center" style="color: #c1c1c1;">
+                    <p class="mt-4 text-center" style="color: #e7e7e7;">
                         Already have an account? <a href="{% url 'login' %}" style="color: #ffdd57;">Login here</a>
                     </p>
                 </form>
             </div>
         </div>
     </div>
-</div>
 
-<style>
-    /* All the same styles from your login form */
-    body {
-        background-color: #080710;
-        color: #ffffff;
-    }
-
-    .card1 {
-        width: 100%;
-        max-width: 400px;
-        background-color: rgba(255, 255, 255, 0.13);
-        border-radius: 10px;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 2px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
-        padding: 50px 35px;
-        color: #ffffff;
-    }
-
-    .cart-button1 {
-        margin-top: 30px;
-        width: 100%;
-        background-color: #ffffff;
-        color: #080710;
-        padding: 15px 0;
-        font-size: 18px;
-        font-weight: 600;
-        border-radius: 5px;
-        cursor: pointer;
-        border: none;
-        transition: all 0.3s ease;
-    }
-
-    .cart-button1:hover {
-        background-color: rgba(255, 255, 255, 0.8);
-    }
-
-    .card1 h3 {
-        font-size: 32px;
-        font-weight: 500;
-        line-height: 42px;
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .form1-label {
-        display: block;
-        margin-top: 20px;
-        font-size: 16px;
-        font-weight: 500;
-    }
-
-    .form1-control {
-        display: block;
-        height: 50px;
-        width: 100%;
-        background-color: rgba(255, 255, 255, 0.07);
-        border-radius: 3px;
-        padding: 0 10px;
-        margin-top: 8px;
-        font-size: 14px;
-        font-weight: 300;
-        color: #ffffff;
-        border: none;
-    }
-
-    .form1-control::placeholder {
-        color: #c1c1c1;
-    }
-
-    .form1-control:focus {
-        outline: none;
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    @media (max-width: 480px) {
-        .card1 {
-            padding: 30px 20px;
-            margin: 20px;
+    <style>
+        /* All the same styles from your login form */
+        body {
+        
+            color: #ffffff;
+         
         }
-    }
-</style>
+
+        .card1 {
+            width: 100%;
+            max-width: 400px;
+            background-color: rgba(255, 255, 255, 0.13);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+            padding: 50px 35px;
+            color: #ffffff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cart-button1 {
+            margin-top: 30px;
+            width: 100%;
+            background-color: #ffffff;
+            color: #080710;
+            padding: 15px 0;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .cart-button1:hover {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .card1 h3 {
+            font-size: 32px;
+            font-weight: 500;
+            line-height: 42px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form1-label {
+            display: block;
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .form1-control {
+            display: block;
+            height: 50px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.07);
+            border-radius: 3px;
+            padding: 0 10px;
+            margin-top: 8px;
+            font-size: 14px;
+            font-weight: 300;
+            color: #ffffff;
+            border: none;
+        }
+
+        .form1-control::placeholder {
+            color: #c1c1c1;
+        }
+
+        .form1-control:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .card1 {
+                width: 90%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card1 {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+        }
+    </style>
 {% endblock %}

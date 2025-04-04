@@ -78,13 +78,13 @@
 
             <!-- Order Summary (Col-3) -->
             <div class="col-lg-3">
-                <div class="card">
+                <div class="item-card">
                     <div class="card-body">
                         <h4 class="card-title ">Order Summary</h4>
                         <hr>
-                        <h5>Subtotal: <span class="float-end">{{ total_price|floatformat:2 }} USD</span></h5>
-                        <h5>Processing Fee (3%): <span class="float-end">{{ fees|floatformat:2 }} USD</span></h5>
-                        <h5>Shipping: <span class="float-end">5.00 USD</span></h5>
+                        <p class="mb-0">Subtotal: <span class="float-end">{{ total_price|floatformat:2 }} USD</span></p>
+                        <p class="mb-0">Processing Fee (3%): <span class="float-end">{{ fees|floatformat:2 }} USD</span></p>
+                        <p>Shipping: <span class="float-end">5.00 USD</span></p>
                         <hr>
                         <h4>Total: <span class="float-end">{{ final_total|floatformat:2 }} USD</span></h4>
                         <a href="{% url 'checkout' %}" class="btn btn-success w-100 mt-2">Proceed to Checkout</a>
@@ -107,8 +107,18 @@
         border-radius: 0.25rem;
     }
     .card-title{
-        font-size: x-large;
+        font-size: large;
     }
+    .item-card {
+    border: 1px solid #e0c7b7;
+    background: white;
+    border-radius: 0;
+    padding: 20px;
+  
+    position: relative;
+    overflow: hidden;
+}
+
 </style>
 
 <!-- JavaScript for Quantity Adjustment -->

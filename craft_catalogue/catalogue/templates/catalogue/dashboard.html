@@ -24,7 +24,6 @@
                     <label for="price_max">Max Price</label>
                     <input type="number" name="price_max" class="form-control" placeholder="1000" value="{{ request.GET.price_max }}" min="0">
                 </div>
-               
                 <div class="mb-3">
                     <label for="items_per_page">Items/Page</label>
                     <select name="items_per_page" class="form-control">
@@ -34,9 +33,9 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <input type="checkbox" name="is_unique" value="1" {% if request.GET.is_unique %}checked{% endif %}> Unique <br>
-                    <input type="checkbox" name="is_sustainable" value="1" {% if request.GET.is_sustainable %}checked{% endif %}> Sustainable <br>
-                    <input type="checkbox" name="is_handmade" value="1" {% if request.GET.is_handmade %}checked{% endif %}> Handmade <br>
+                    <input type="checkbox" name="is_unique" value="1" {% if request.GET.is_unique %}checked{% endif %}> Unique<br>
+                    <input type="checkbox" name="is_sustainable" value="1" {% if request.GET.is_sustainable %}checked{% endif %}> Sustainable<br>
+                    <input type="checkbox" name="is_handmade" value="1" {% if request.GET.is_handmade %}checked{% endif %}> Handmade<br>
                 </div>
                 <button type="submit" class="btn btn-dark w-100">Filter</button>
             </form>
@@ -65,7 +64,6 @@
                     <div class="mb-3">
                         <select name="sort_by" class="form-control">
                             <option value="name" {% if request.GET.sort_by == 'name' %}selected{% endif %}>Sort By</option>
-                            <option value="name" {% if request.GET.sort_by == 'name' %}selected{% endif %}>Name</option>
                             <option value="price" {% if request.GET.sort_by == 'price' %}selected{% endif %}>Price (Low to High)</option>
                             <option value="-price" {% if request.GET.sort_by == '-price' %}selected{% endif %}>Price (High to Low)</option>
                             <option value="-id" {% if request.GET.sort_by == '-id' %}selected{% endif %}>Newest</option>
@@ -73,15 +71,15 @@
                     </div>
                     <div class="mb-3">
                         <select name="items_per_page" class="form-control">
-                            <option value="8" {% if request.GET.items_per_page == '8' %}selected{% endif %}>Items/Page</option>
+                            <option value="8" {% if request.GET.items_per_page == '8' %}selected{% endif %}>8</option>
                             <option value="16" {% if not request.GET.items_per_page or request.GET.items_per_page == '16' %}selected{% endif %}>16</option>
                             <option value="32" {% if request.GET.items_per_page == '32' %}selected{% endif %}>32</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <input type="checkbox" name="is_unique" value="1" {% if request.GET.is_unique %}checked{% endif %}> Unique <br>
-                        <input type="checkbox" name="is_sustainable" value="1" {% if request.GET.is_sustainable %}checked{% endif %}> Sustainable <br>
-                        <input type="checkbox" name="is_handmade" value="1" {% if request.GET.is_handmade %}checked{% endif %}> Handmade <br>
+                        <input type="checkbox" name="is_unique" value="1" {% if request.GET.is_unique %}checked{% endif %}> Unique<br>
+                        <input type="checkbox" name="is_sustainable" value="1" {% if request.GET.is_sustainable %}checked{% endif %}> Sustainable<br>
+                        <input type="checkbox" name="is_handmade" value="1" {% if request.GET.is_handmade %}checked{% endif %}> Handmade<br>
                     </div>
                     <button type="submit" class="btn btn-dark w-100">Filter</button>
                 </form>
@@ -106,36 +104,29 @@
                         </select>
                     </div>
                 </div>
-                
-    
-                
+
                 {% for item in items %}
                 <div class="col-6 col-sm-6 col-md-4 col-lg-3 p-0">
                     <div class="item-card d-flex flex-column align-items-center text-center">
                         <a href="{% url 'item_detail' item.name %}" class="text-decoration-none">
                             {% with item.images.all|slice:":2" as images %}
                                 {% if images|length > 0 %}
-                                    <img src="{{ images.0.image.url }}"
-                                         class="item-image"
-                                         alt="{{ item.name }}"
-                                         style="max-width: 200px; max-height: 300px;">
+                                    <img src="{{ images.0.image.url }}" class="item-image" alt="{{ item.name }}" style="max-width: 200px; max-height: 300px;">
                                 {% else %}
-                                    <img src="/static/default-image.jpg"
-                                         class="item-image"
-                                         alt="No image available">
+                                    <img src="/static/default-image.jpg" class="item-image" alt="No image available">
                                 {% endif %}
                             {% endwith %}
                         </a>
-                
+
                         <a href="{% url 'add_to_cart' item.id %}" class="add-to-cart-btn btn btn-success btn-sm">
                             Add to Cart
                         </a>
-                
+
                         <div class="item-info p-0">
                             <p class="mb-0 mt-2"><strong>{{ item.name }}</strong></p>
                             <p class="mb-0 mt-0 text-muted">{{ item.category }}</p>
                             <p class="card-text m-0">
-                                <strong>Creator:</strong> 
+                                <strong>Creator:</strong>
                                 <a href="{% url 'artist_detail' item.artist.name %}" class="position-relative" style="z-index: 3;">
                                     {{ item.artist.name }}
                                 </a>
@@ -144,10 +135,8 @@
                         </div>
                     </div>
                 </div>
-                
-                
                 {% empty %}
-                <p class="text-muted text-center">No items found.</p>
+                    <p class="text-muted text-center">No items found.</p>
                 {% endfor %}
             </div>
 
@@ -158,11 +147,9 @@
                         <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
                         <li class="page-item"><a class="page-link" href="?page={{ items.previous_page_number }}">Previous</a></li>
                     {% endif %}
-
                     <li class="page-item disabled">
                         <span class="page-link">Page {{ items.number }} of {{ items.paginator.num_pages }}</span>
                     </li>
-
                     {% if items.has_next %}
                         <li class="page-item"><a class="page-link" href="?page={{ items.next_page_number }}">Next</a></li>
                         <li class="page-item"><a class="page-link" href="?page={{ items.paginator.num_pages }}">Last</a></li>
@@ -174,7 +161,7 @@
 </div>
 
 <style>
-    .item-card {
+.item-card {
     border: 1px solid #e0c7b7;
     background: white;
     border-radius: 0;
@@ -188,13 +175,24 @@
     overflow: hidden;
 }
 
-
-
 .item-image {
     width: 100%;
     height: 250px;
     object-fit: cover;
     display: block;
+}
+
+@media (max-width: 768px) {
+    .add-to-cart-btn {
+        display: block !important;
+        position: static;
+        transform: none;
+        margin-top: 10px;
+    }
+
+    .item-card:hover .add-to-cart-btn {
+        display: block;
+    }
 }
 
 .item-info {
@@ -208,6 +206,7 @@
 }
 
 .add-to-cart-btn {
+    
     position: absolute;
     top: 50%;
     left: 50%;
@@ -217,17 +216,17 @@
     text-align: center;
 }
 
+
 .item-card:hover .add-to-cart-btn {
     display: block;
 }
-
-
 </style>
+
 <script>
-    document.getElementById("sort_by").addEventListener("change", function() {
-        let params = new URLSearchParams(window.location.search);
-        params.set("sort_by", this.value);  // Update sorting parameter
-        window.location.search = params.toString();  // Reload with new query
-    });
+document.getElementById("sort_by").addEventListener("change", function () {
+    let params = new URLSearchParams(window.location.search);
+    params.set("sort_by", this.value);
+    window.location.search = params.toString();
+});
 </script>
 {% endblock %}

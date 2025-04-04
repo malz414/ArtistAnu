@@ -4,9 +4,11 @@
 
 <div class="hero-section" >
   <div class="container h-100">
-    <div class="row h-100 align-items-end">
+    <div class="row h-100 align-items-center">
       <div class="col-12 text-center mb-5">
-        <form method="GET" action="{% url 'dashboard' %}" class="filter-form bg-white p-4 rounded shadow " style="max-width: 800px; margin: 0 auto; align-self: bas;">
+        <h1 class="hero-title">Celebrating Antiguan Crafts</h1>
+        <p class="hero-subtitle ">Discover the heart and soul of Antiguan artistry.<br> Explore, connect, and be inspired by<br> the island’s most talented creators.</p>
+        <form method="GET" action="{% url 'dashboard' %}" class="filter-form bg-white p-4 rounded shadow " style="max-width: 800px; margin: 20px auto;">
           <div class="row g-3">
             <div class="col-md-6">
               <select name="category" class="form-select">
@@ -34,11 +36,12 @@
   <div class="row">
     <div class="col-md-6 col-sm-12">
       {% if featured_item.images.all %}
-      <img id="featuredMainImage" src="{{ featured_item.images.first.image.url }}" alt="{{ featured_item.name }}" class="img-fluid main-img">
+      <img id="featuredMainImage" src="{{ featured_item.images.first.image.url }}" alt="{{ featured_item.name }}" class="img-fluid main-img" loading="lazy">
+
       <div class="image-thumbnails d-flex flex-wrap mt-2 text-center">
         {% for image in featured_item.images.all %}
-        <img src="{{ image.image.url }}" alt="{{ featured_item.name }}" class="img-thumbnail thumb-img" onclick="changeFeaturedMainImage('{{ image.image.url }}')">
-        {% endfor %}
+        <img src="{{ image.image.url }}" alt="{{ featured_item.name }}" class="img-thumbnail thumb-img" onclick="changeFeaturedMainImage('{{ image.image.url }}')" loading="lazy">
+          {% endfor %}
       </div>
       {% else %}
       <p class="text-muted">No image available</p>
@@ -46,12 +49,12 @@
     </div>
 
     <div class="col-md-6 col-sm-12">
-      <h2 class="featured-heading">Featured Item</h2>
-      <h3>{{ featured_item.name }}</h3>
+      <h2 class="featured-heading">Featured Item</h3>
+      <h4>{{ featured_item.name }}</h4>
       <p><strong>Description:</strong> {{ featured_item.description }}</p>
       <p><strong>Artist:</strong> <a href="{% url 'artist_detail' featured_item.artist.name %}">{{ featured_item.artist.name }}</a></p>
 
-      <p><strong>Price:</strong> {{ featured_item.price }} USD</p>
+      <p><strong>Price:</strong> ${{ featured_item.price }} </p>
       <a href="{% url 'add_to_cart' featured_item.id %}" class="btn btn-success btn-lg">Add to Cart</a>
     </div>
   </div>
@@ -63,54 +66,42 @@
   <p class="welcome-text">At ArtistAnu, we’re more than a marketplace – we’re a bridge that connects artists, collectors, and art lovers. Discover one-of-a-kind pieces that tell the story of Antigua, from stunning paintings and intricate pottery to handcrafted jewelry and textiles.</p>
 
 </div>
-<div class="container-fluid p-3" style="background-color: #fffae5;">
+<div class="container-fluid p-3" style="background-color: #ffffff;">
   <div class="container">
-    <h2 class="featured-heading text-center p-3">Recent Additions</h2>
-    <div class="row">
+ 
+    <div class="row align-items-center">
+      <div class="col-3 col-sm-6 col-md-4 col-lg-3 p-1 d-flex flex-column justify-content-center align-items-center">
+        <h2 class="featured-heading">Recent Additions</h2>
+        <a href="{% url 'dashboard' %}?sort_by=-id" class="btn btn-outline-dark btn-sm">See All →</a>
+      </div>
       {% for item in recent_items %}
-      <div class="col-6 col-sm-6 col-md-4 col-lg-3 p-0">
-        <div class="item-card d-flex flex-column align-items-center text-center">
+      <div class="Col-3 col-sm-6 col-md-4 col-lg-3 p-1">
+        <div class="item-card position-relative overflow-hidden rounded">
           <a href="{% url 'item_detail' item.name %}" class="text-decoration-none">
-            {% with item.images.all|slice:":2" as images %}
+            {% with item.images.all|slice:"0:2" as images %}
             {% if images|length > 0 %}
-            <img src="{{ images.0.image.url }}" class="item-image" alt="{{ item.name }}" style="max-width: 200px; max-height: 300px;">
+            <div class="image-container rounded">
+              <img src="{{ images.0.image.url }}" class="item-image rounded" alt="{{ item.name }}" loading="lazy" >
+            </div>
             {% else %}
-            <img src="/static/default-image.jpg" class="item-image" alt="No image available">
+            <div class="image-container rounded">
+              <img src="/static/default-image.jpg" class="item-image rounded" alt="No image available" loading="lazy">
+            </div>
             {% endif %}
             {% endwith %}
+            <div class="price-overlay">${{ item.price|floatformat:2 }}</div>
           </a>
-
-          <a href="{% url 'add_to_cart' item.id %}" class="add-to-cart-btn btn btn-success btn-sm">
-            Add to Cart
-          </a>
-
-          <div class="item-info mb p-0">
-            <p class="mb-0 mt-4"><strong>{{ item.name }}</strong></p>
-            <p class="mb-0 mt-0 text-muted">{{ item.category }}</p>
-            <p class="card-text m-0">
-              <strong>Creator:</strong>
-              <a href="{% url 'artist_detail' item.artist.name %}" class="position-relative" style="z-index: 3;">
-                {{ item.artist.name }}
-              </a>
-            </p>
-            <p class="price m-0">${{ item.price|floatformat:2 }}</p>
-          </div>
         </div>
       </div>
-
       {% empty %}
       <p class="text-muted text-center">No recent items found.</p>
       {% endfor %}
-    </div>
-
-    <div class="text-end mt-4">
-      <a href="{% url 'dashboard' %}" class="btn btn-outline-dark btn-sm">See All →</a>
     </div>
   </div>
 </div>
 
 <div class="container-fluid p-0" style="background-color: #ffffff;">
-  <h2 class="featured-heading text-center p-3">Categories</h2>
+  <!-- <h2 class="featured-heading text-center p-3">Categories</h2> -->
   <div class="categories d-flex flex-wrap justify-content-between">
     {% for category in categories %}
     {% with forloop.counter0|divisibleby:3 as alt_color %}
@@ -119,7 +110,7 @@
        ">
 
       <a href="{% url 'dashboard' %}?category={{ category.name }}">
-        <img src="{% static 'images/categories/' %}{{ forloop.counter|add:1 }}.png" alt="{{ category.name }}" class="img-fluid category-image mx-auto d-block">
+        <img src="{% static 'images/categories/' %}{{ forloop.counter|add:1 }}.png" alt="{{ category.name }}" class="img-fluid category-image mx-auto d-block" loading="lazy">
       </a>
     </div>
 
@@ -137,13 +128,39 @@
 </script>
 
 <style>
-  .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-}
+ .image-container {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+  }
+  .item-image {
+    width: 100%;
+    transition: transform 0.3s ease-in-out;
+    border-radius: 15px; 
+    min-width: 300px; 
+    min-height: 300px; 
+    max-width: 300px; 
+    max-height: 300px; 
+    object-fit: cover;
+  }
+  .item-card:hover .item-image {
+    transform: scale(1.1);
+  }
+  .price-overlay {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffffff;
+    color: green;
+    padding: 8px 12px;
+    border-radius: 15px;
+    font-weight: bold;
+    border: 2px solid black;
+  }
+
   .bg-lightyellow {
     background-color: #fffacd;
     /* Light Yellow */
@@ -164,14 +181,19 @@
   }
 
   .hero-section {
-    margin-top: 20px; 
+    
+
     margin-bottom: 3rem;
     position: relative; 
     min-height: 100vh; 
-    background: url('/media/extra/hero.jpg'); 
-     background-size: cover;
-background-repeat: no-repeat;
-background-position: 20%;
+    background: url('/media/extra/heronoword.jpg'); 
+    
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .filter-form {
@@ -182,6 +204,20 @@ background-position: 20%;
     transform: translateX(-50%);
   }
 
+
+
+  .hero-title {
+    font-size: clamp(2.5rem, 5vw, 5rem);
+    font-weight: bold;
+    color: black;
+    margin-bottom: 10px;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    color: black;
+    margin-bottom: 20px;
+  }
 
   .featured-heading {
     font-size: 2rem;
@@ -235,6 +271,27 @@ background-position: 20%;
     width: 70%;
     text-align: center;
   }
+  @media (min-width: 768px) {
+  .item-card:hover .add-to-cart-btn {
+    display: block;
+  }
+}
+
+
+/* Always show on mobile */
+@media (max-width: 767px) {
+  .add-to-cart-btn {
+    display: block;
+    position: static;
+    transform: none;
+    margin-top: 10px;
+    width: auto;
+  }
+}
+
+  .item-card {
+    padding-bottom: 10px; /* ensure spacing when button shows */
+  }
 
   .item-card:hover .add-to-cart-btn {
     display: block;
@@ -277,12 +334,6 @@ background-position: 20%;
     overflow: hidden;
   }
 
-  .category-image {
-    width: 80%;
-    height: auto;
-    object-fit: contain;
-    transition: transform 0.2s ease;
-  }
 
   .category-image:hover {
     transform: scale(1.05);
@@ -454,8 +505,8 @@ background-position: 20%;
       var parallax = document.querySelector('.parallax');
       var offset = window.pageYOffset;
       var scale = 1 + (offset * 0.001);
-      parallax.style.backgroundSize = (100 + offset * 0.0052) + "%";
-      parallax.style.backgroundPosition = 'center ' + (offset * .1) + 'px';
+      parallax.style.backgroundSize = (100 + offset * 0.052) + "%";
+      parallax.style.backgroundPosition = 'center ' + (offset * .02) + 'px';
     });
   }
 </script>
