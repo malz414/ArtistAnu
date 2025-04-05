@@ -55,7 +55,7 @@
       <p><strong>Artist:</strong> <a href="{% url 'artist_detail' featured_item.artist.name %}">{{ featured_item.artist.name }}</a></p>
 
       <p><strong>Price:</strong> ${{ featured_item.price }} </p>
-      <a href="{% url 'add_to_cart' featured_item.id %}" class="btn btn-success btn-lg">Add to Cart</a>
+      <a href="{% url 'add_to_cart' featured_item.id %}" class="btn btn-outline-dark btn-lg">Add to Cart</a>
     </div>
   </div>
 </div>
@@ -70,12 +70,12 @@
   <div class="container">
  
     <div class="row align-items-center">
-      <div class="col-3 col-sm-6 col-md-4 col-lg-3 p-1 d-flex flex-column justify-content-center align-items-center">
+      <div class="col-6 col-sm-6 col-md-6 col-lg-3 p-1 d-flex flex-column justify-content-center align-items-center">
         <h2 class="featured-heading">Recent Additions</h2>
         <a href="{% url 'dashboard' %}?sort_by=-id" class="btn btn-outline-dark btn-sm">See All →</a>
       </div>
       {% for item in recent_items %}
-      <div class="Col-3 col-sm-6 col-md-4 col-lg-3 p-1">
+      <div class="col-6 col-sm-6 col-md-6  col-lg-3 p-1">
         <div class="item-card position-relative overflow-hidden rounded">
           <a href="{% url 'item_detail' item.name %}" class="text-decoration-none">
             {% with item.images.all|slice:"0:2" as images %}
@@ -150,15 +150,15 @@
   }
   .price-overlay {
     position: absolute;
-    bottom: 10px;
-    left: 50%;
+    bottom: 20px;
+    left: 20%;
     transform: translateX(-50%);
     background: #ffffff;
     color: green;
     padding: 8px 12px;
     border-radius: 15px;
     font-weight: bold;
-    border: 2px solid black;
+    border: 1px solid black;
   }
 
   .bg-lightyellow {
@@ -326,7 +326,7 @@
   .categories {
     display: flex;
     flex-wrap: wrap;
-
+    
     justify-content: space-between;
   }
 
@@ -335,9 +335,13 @@
   }
 
 
-  .category-image:hover {
-    transform: scale(1.05);
-  }
+  .category-image {
+  transition: transform 0.3s ease-in-out; /* Add transition to the default state */
+}
+
+.category-image:hover {
+  transform: scale(1.05);
+}
 
   .carousel-container {
     display: flex;

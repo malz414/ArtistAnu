@@ -1,27 +1,30 @@
-/* Ensure the footer stays at the bottom */
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
-    font-weight: 300;
-    font-size: large;
-    background-color: #F8F8F8;
-}
+    /* Ensure the footer stays at the bottom */
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        font-family: 'Poppins', serif;
+        font-weight: 300;
+        font-size: large;
+        background-color: #F8F8F8;
+    }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Yanone Kaffeesatz', sans-serif;
-}
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Playfair Display', serif;
 
-.navbar-brand, .nav-link {
-    font-family: 'Yanone Kaffeesatz', sans-serif;
-}
+    }
 
-.btn {
-    font-family: 'Yanone Kaffeesatz', sans-serif;
-}
+    .navbar-brand, .nav-link {
+        font-family: 'Playfair Display', serif;
+
+    }
+
+    .btn {
+        font-family: 'Playfair Display', serif;
+
+    }
 
 /* Main content should fill available space */
 .container {
@@ -148,7 +151,10 @@ footer {
     height: auto !important;
     max-height: 400px !important;
 }
-
+.card-img, .card-img-top {
+    border-top-left-radius: var(0) !important;
+    border-top-right-radius: var(0) !important;
+}
 footer p {
     white-space: nowrap;
 }
@@ -172,7 +178,7 @@ footer a.nav-link {
 
 .dropdown-menu li {
     padding: 0;
-    border: dashed 2px #41403E;
+
 }
 
 .dropdown-menu .dropdown-item:hover {
@@ -184,12 +190,9 @@ footer a.nav-link {
     border-radius: 0;   
 }
 
-.card:hover {
-    transform: scale(1.02);
-}
 
 .card-title {
-    font-size: 28px;
+    font-size: 12px;
 }
 
 .search-suggestions-dropdown {
