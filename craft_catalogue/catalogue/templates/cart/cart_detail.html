@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container ">
-    <h2>Your Cart</h2>
+<div class="container " style="min-height: 90vh;">
+    <h2 class="text-center">Your Cart</h2>
 
     {% if cart.cart_items.all %}
         <!-- <div id="cart-timer-container" class="d-flex align-items-center">
@@ -87,7 +87,9 @@
                         <p>Shipping: <span class="float-end">5.00 USD</span></p>
                         <hr>
                         <h4>Total: <span class="float-end">{{ final_total|floatformat:2 }} USD</span></h4>
-                        <a href="{% url 'checkout' %}" class="btn btn-success w-100 mt-2">Proceed to Checkout</a>
+                        <a href="#" class="btn btn-success w-100 mt-2">Proceed to Checkout</a>
+                        <!-- <a href="{% url 'checkout' %}" class="btn btn-success w-100 mt-2">Proceed to Checkout</a> -->
+                        <p>*Note ArtistAnu is still in testing. Purchases cannot be made.</p>
                         <a href="{% url 'clear_cart' %}" class="btn btn-danger w-100 mt-2">Clear Cart</a>
                     </div>
                 </div> 
@@ -95,7 +97,7 @@
         </div>
 
     {% else %}
-        <p>Your cart is empty.</p>
+        <p class="text-center">Your cart is empty.</p>
     {% endif %}
 </div>
 <style>
