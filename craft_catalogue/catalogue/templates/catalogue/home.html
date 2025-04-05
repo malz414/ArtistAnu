@@ -57,15 +57,12 @@
       <p><strong>Price:</strong> ${{ featured_item.price }} </p>
       <a href="{% url 'add_to_cart' featured_item.id %}" class="btn btn-outline-dark btn-lg">Add to Cart</a>
     </div>
+    
   </div>
 </div>
 {% else %}
 <p>No featured item available.</p>
 {% endif %}
-<div class="container-fluid parallax" style="min-height: 70vh; color: white; ">
-  <p class="welcome-text">At ArtistAnu, we’re more than a marketplace – we’re a bridge that connects artists, collectors, and art lovers. Discover one-of-a-kind pieces that tell the story of Antigua, from stunning paintings and intricate pottery to handcrafted jewelry and textiles.</p>
-
-</div>
 <div class="container-fluid p-3" style="background-color: #ffffff;">
   <div class="container">
  
@@ -99,6 +96,11 @@
     </div>
   </div>
 </div>
+<div class="container-fluid parallax" style="min-height: 70vh; color: white; ">
+  <p class="welcome-text">At ArtistAnu, we’re more than a marketplace – we’re a bridge that connects artists, collectors, and art lovers. Discover one-of-a-kind pieces that tell the story of Antigua, from stunning paintings and intricate pottery to handcrafted jewelry and textiles.</p>
+
+</div>
+
 
 <div class="container-fluid p-0" style="background-color: #ffffff;">
   <!-- <h2 class="featured-heading text-center p-3">Categories</h2> -->
